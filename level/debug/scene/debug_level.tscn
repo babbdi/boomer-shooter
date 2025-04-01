@@ -1,11 +1,31 @@
-[gd_scene load_steps=3 format=3 uid="uid://c1s5vdgssdq6u"]
+[gd_scene load_steps=7 format=3 uid="uid://c1s5vdgssdq6u"]
 
 [ext_resource type="PackedScene" uid="uid://dlbxu4t873ohg" path="res://level/debug/blend/debugLevel.blend" id="1_b510y"]
+[ext_resource type="Texture2D" uid="uid://6gm72fw3kwrc" path="res://level/debug/scene/lilienstein_2k.hdr" id="2_8makj"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_e3bb1"]
+panorama = ExtResource("2_8makj")
+
+[sub_resource type="Sky" id="Sky_angal"]
+sky_material = SubResource("PanoramaSkyMaterial_e3bb1")
+
+[sub_resource type="Environment" id="Environment_e3bb1"]
+background_mode = 2
+sky = SubResource("Sky_angal")
+tonemap_mode = 2
+glow_enabled = true
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_b510y"]
 
 [node name="debugLevel" instance=ExtResource("1_b510y")]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="1"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." index="0"]
+environment = SubResource("Environment_e3bb1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." index="1"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.2, 0)
 mesh = SubResource("CapsuleMesh_b510y")
