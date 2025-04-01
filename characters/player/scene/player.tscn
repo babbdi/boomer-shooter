@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://bk8lvlxjxkt2d"]
+
+[ext_resource type="Script" uid="uid://lbedbhvtj8uf" path="res://characters/player/scene/player.gd" id="1_a4aai"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ie77o"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ie77o"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ie77o"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_a4aai"]
+material = SubResource("StandardMaterial3D_ie77o")
+size = Vector3(0.735, 0.08, 0.66)
+
+[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera")]
+script = ExtResource("1_a4aai")
+head = NodePath("head")
+camera = NodePath("head/Camera3D")
+
+[node name="cs_player" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_ie77o")
+
+[node name="mesh_player" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_ie77o")
+
+[node name="head" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.79, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -0.2)
+mesh = SubResource("BoxMesh_a4aai")
