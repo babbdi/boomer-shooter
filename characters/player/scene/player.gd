@@ -2,7 +2,8 @@ extends CharacterBody3D
 
 @export var head : Node3D
 @export var camera : Camera3D
-
+@export var rc_stairAhead : RayCast3D
+@export var rc_stairBelow : RayCast3D
 @export_group("camera")
 @export var look_sensitivity := 0.006
 @export var gamepad_look_sensitivity := 0.05
@@ -24,7 +25,9 @@ var noclip := false
 @export var ground_decel := 10.0
 @export var ground_friction := 6.0
 var wish_dir := Vector3.ZERO
-
+const MAX_STEP_HEIGHT := 0.5
+var _snapped_to_stair_last_frame := false
+var _last_frame_was_on_floor := -INF
 @export_group("air movement")
 @export var air_cap := 0.85 # conseguir surfar em rampas mais altas, quanto maior o valor mais facil de "grudar" nelas
 @export var air_accel := 800.0 
@@ -99,6 +102,7 @@ func _handle_ground_physics(delta : float) -> void:
 	
 	_headbob_effect(delta)
 func _physics_process(delta: float) -> void:
+	if is_on_floor(): _last_frame_was_on_floor = Engine.get_physics_frames()
 	var input_dir := Input.get_vector("left","right","up","down").normalized()
 	
 	## Ele rotaciona o personagem na direção que a gente está indo
@@ -106,14 +110,22 @@ func _physics_process(delta: float) -> void:
 	wish_dir = self.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	cam_aligned_wish_dir = camera.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	if not _handle_noclip(delta):
-		if is_on_floor():
+		if is_on_floor() or _snapped_to_stair_last_frame:
 			if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
-				self.velocity.y += jump_velocity
+				self.velocity.y = jump_velocity
 			_handle_ground_physics(delta)
 		else:
 			_handle_air_physics(delta)
-	
-		move_and_slide()
+		
+		if not _snap_up_stairs_check(delta):
+			# Because _snap_up_stairs_check moves the body manually, don't call move_and_slide
+			# This should be fine since we ensure with the body_test_motion that it doesn't 
+			# collide with anything except the stairs it's moving up to.
+			#_push_away_rigid_bodies() # Call before move_and_slide()
+			move_and_slide()
+			_snap_down_to_stairs_check()
+	_slide_camera_smooth_back_to_origin(delta)
+		
 
 func _handle_noclip(delta : float) -> bool:
 	if Input.is_action_just_pressed('noclip') and OS.has_feature("debug"):
@@ -140,11 +152,75 @@ func clip_velocity(normal : Vector3, overbounce: float, delta: float) -> void:
 		self.velocity -= normal * adjust
 
 func is_surface_too_steep(normal : Vector3) -> bool:
-	var max_slope_ang_dot := Vector3(0,1,0).rotated(Vector3(1.0,0,0), self.floor_max_angle).dot(Vector3(0,1,0))
-	if normal.dot(Vector3(0,1,0)) < max_slope_ang_dot:
-		return true
-	else:
-		return false
+	return normal.angle_to(Vector3.UP) > self.floor_max_angle
+
+## ESCADAS ESCADAS ESCADAS ESCADAS ESCADAS ESCADAS ESCADAS ESCADAS ESCADAS ESCADAS ESCADAS 
+func _snap_down_to_stairs_check() -> void:
+	var did_snap := false
+	# Modified slightly from tutorial. I don't notice any visual difference but I think this is correct.
+	# Since it is called after move_and_slide, _last_frame_was_on_floor should still be current frame number.
+	# After move_and_slide off top of stairs, on floor should then be false. Update raycast incase it's not already.
+	%rc_stairBelow.force_raycast_update()
+	var floor_below : bool = %rc_stairBelow.is_colliding() and not is_surface_too_steep(%rc_stairBelow.get_collision_normal())
+	var was_on_floor_last_frame := Engine.get_physics_frames() == _last_frame_was_on_floor
+	if not is_on_floor() and velocity.y <= 0 and (was_on_floor_last_frame or _snapped_to_stair_last_frame) and floor_below:
+		var body_test_result := KinematicCollision3D.new()
+		if self.test_move(self.global_transform, Vector3(0,-MAX_STEP_HEIGHT,0), body_test_result):
+			_save_camera_pos_for_smoothing()
+			var translate_y := body_test_result.get_travel().y
+			self.position.y += translate_y
+			apply_floor_snap()
+			did_snap = true
+	_snapped_to_stair_last_frame = did_snap
+func _snap_up_stairs_check(delta : float) -> bool:
+	if not is_on_floor() and not _snapped_to_stair_last_frame: return false
+	# Don't snap stairs if trying to jump, also no need to check for stairs ahead if not moving
+	if self.velocity.y > 0 or (self.velocity * Vector3(1,0,1)).length() == 0: return false
+ 
+
+	var expected_move_motion := self.velocity * Vector3(1,0,1) * delta
+	var step_pos_with_clearance := self.global_transform.translated(expected_move_motion + Vector3(0, MAX_STEP_HEIGHT * 2, 0))
+	# Run a body_test_motion slightly above the pos we expect to move to, towards the floor.
+	#  We give some clearance above to ensure there's ample room for the player.
+	#  If it hits a step <= MAX_STEP_HEIGHT, we can teleport the player on top of the step
+	#  along with their intended motion forward.
+	var down_check_result := KinematicCollision3D.new()
+	if (self.test_move(step_pos_with_clearance, Vector3(0,-MAX_STEP_HEIGHT*2,0), down_check_result)
+	and (down_check_result.get_collider().is_class("StaticBody3D") or down_check_result.get_collider().is_class("CSGShape3D"))):
+		var step_height := ((step_pos_with_clearance.origin + down_check_result.get_travel()) - self.global_position).y 
+		# Note I put the step_height <= 0.01 in just because I noticed it prevented some physics glitchiness
+		# 0.02 was found with trial and error. Too much and sometimes get stuck on a stair. Too little and can jitter if running into a ceiling.
+		# The normal character controller (both jolt & default) seems to be able to handled steps up of 0.1 anyway
+		if step_height > MAX_STEP_HEIGHT or step_height <= 0.01 or (down_check_result.get_position() - self.global_position).y > MAX_STEP_HEIGHT: return false
+		%rc_stairAhead.global_position = down_check_result.get_position() + Vector3(0,MAX_STEP_HEIGHT,0) + expected_move_motion.normalized() * 0.1
+		%rc_stairAhead.force_raycast_update()
+		if %rc_stairAhead.is_colliding() and not is_surface_too_steep(%rc_stairAhead.get_collision_normal()):
+			_save_camera_pos_for_smoothing()
+			self.global_position = (step_pos_with_clearance.origin) + (down_check_result.get_travel())
+			apply_floor_snap()
+			_snapped_to_stair_last_frame = true
+			return true
+	return false
+	
+var _saved_camera_global_pos := Vector3(0,0,0)
+func _save_camera_pos_for_smoothing() -> void:
+	if _saved_camera_global_pos == Vector3(0,0,0):
+		_saved_camera_global_pos = camera.global_position
+func _slide_camera_smooth_back_to_origin(delta : float) -> void:
+	if _saved_camera_global_pos == null: return
+	camera.global_position.y = _saved_camera_global_pos.y
+	camera.position.y = clampf(camera.position.y, -0.7, -0.7) # Clamp incase teleported
+	var move_amount : float = max(self.velocity.length() * delta, walk_speed/2 * delta)
+	camera.position.y = move_toward(camera.position.y, 0.0, move_amount)
+	_saved_camera_global_pos = camera.global_position
+	if camera.position.y == 0:
+		_saved_camera_global_pos = Vector3(0,0,0) # Stop smoothing camera
+func _run_body_test_motion(from : Transform3D, motion : Vector3, result : PhysicsTestMotionResult3D) -> bool:
+	if not result: result = PhysicsTestMotionResult3D.new()
+	var params := PhysicsTestMotionParameters3D.new()
+	params.from = from
+	params.motion = motion
+	return PhysicsServer3D.body_test_motion(self.get_rid(), params, result)
 
 func get_move_speed() -> float:
 	return sprint_speed if Input.is_action_pressed("sprint") else walk_speed

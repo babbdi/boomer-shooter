@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bk8lvlxjxkt2d"]
+[gd_scene load_steps=4 format=3 uid="uid://bk8lvlxjxkt2d"]
 
 [ext_resource type="Script" uid="uid://lbedbhvtj8uf" path="res://characters/player/scene/player.gd" id="1_a4aai"]
 
@@ -6,17 +6,12 @@
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_ie77o"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ie77o"]
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_a4aai"]
-material = SubResource("StandardMaterial3D_ie77o")
-size = Vector3(0.735, 0.08, 0.66)
-
-[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera")]
+[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "rc_stairAhead", "rc_stairBelow")]
 script = ExtResource("1_a4aai")
 head = NodePath("head")
 camera = NodePath("head/Camera3D")
+rc_stairAhead = NodePath("rc_stairAhead")
+rc_stairBelow = NodePath("rc_stairBelow")
 
 [node name="cs_player" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -31,7 +26,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 
 [node name="Camera3D" type="Camera3D" parent="head"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -0.2)
-visible = false
-mesh = SubResource("BoxMesh_a4aai")
+[node name="rc_stairAhead" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(0.998567, -0.0535211, 0, 0.0535211, 0.998567, 0, 0, 0, 1, 0, 0.842036, -1.15848)
+target_position = Vector3(0, -0.55, 0)
+
+[node name="rc_stairBelow" type="RayCast3D" parent="."]
+unique_name_in_owner = true

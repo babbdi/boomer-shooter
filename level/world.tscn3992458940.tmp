@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3 uid="uid://tus5igjalm37"]
+
+[ext_resource type="PackedScene" uid="uid://bk8lvlxjxkt2d" path="res://characters/player/scene/player.tscn" id="2_sw3g3"]
+[ext_resource type="PackedScene" uid="uid://c1s5vdgssdq6u" path="res://level/debug/scene/debug_level.tscn" id="2_tjjer"]
+[ext_resource type="Texture2D" uid="uid://bmo3i6smairbs" path="res://textures/level/debug/debugRed.jpg" id="3_tjjer"]
+
+[sub_resource type="Curve3D" id="Curve3D_sw3g3"]
+_data = {
+"points": PackedVector3Array(0, 13.8461, -0.227917, 0, -13.8461, 0.227917, 0.394653, -0.269494, 3.27743, 0, 1.50152, 2.97469, 0, -1.50152, -2.97469, 0.394645, -21.6322, -6.79563, 0, 0, 0, 0, 0, 0, 0.394645, -31.4252, -24.8551, 0, -0.321869, 10.2534, 0, 0.321869, -10.2534, 0.394645, -38.2124, -48.4237, 0, -3.1284, 5.42245, 0, 3.1284, -5.42245, 0.394645, -26.3614, -74.4695, 3.05176e-05, -5.79149, 5.33124, -3.05176e-05, 5.79149, -5.33124, 0.130947, -4.06404, -96.964, -3.05176e-05, -8.82646, 8.5894, 3.05176e-05, 8.82646, -8.5894, -0.000588399, 15.2036, -116.266),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lx6e4"]
+albedo_texture = ExtResource("3_tjjer")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nadbi"]
+
+[node name="World" type="Node3D"]
+
+[node name="player" parent="." instance=ExtResource("2_sw3g3")]
+
+[node name="debugLevel" parent="." instance=ExtResource("2_tjjer")]
+
+[node name="Path3D" type="Path3D" parent="."]
+transform = Transform3D(6.43132, 0, 0, 0, 0.661337, 0, 0, 0, 1, 0, 0, -28.7654)
+curve = SubResource("Curve3D_sw3g3")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Path3D"]
+material_override = SubResource("StandardMaterial3D_lx6e4")
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0, 1, -5.82, 0.53)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = true
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+material = SubResource("StandardMaterial3D_nadbi")
+
+[editable path="debugLevel"]
