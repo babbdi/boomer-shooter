@@ -8,8 +8,8 @@
 
 [node name="player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "rc_stairAhead", "rc_stairBelow")]
 script = ExtResource("1_a4aai")
-head = NodePath("head")
-camera = NodePath("head/Camera3D")
+head = NodePath("headOriginalPosition/cameraSmooth/head")
+camera = NodePath("headOriginalPosition/cameraSmooth/head/Camera3D")
 rc_stairAhead = NodePath("rc_stairAhead")
 rc_stairBelow = NodePath("rc_stairBelow")
 
@@ -21,10 +21,15 @@ shape = SubResource("CapsuleShape3D_ie77o")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_ie77o")
 
-[node name="head" type="Node3D" parent="."]
+[node name="headOriginalPosition" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 
-[node name="Camera3D" type="Camera3D" parent="head"]
+[node name="cameraSmooth" type="Node3D" parent="headOriginalPosition"]
+unique_name_in_owner = true
+
+[node name="head" type="Node3D" parent="headOriginalPosition/cameraSmooth"]
+
+[node name="Camera3D" type="Camera3D" parent="headOriginalPosition/cameraSmooth/head"]
 
 [node name="rc_stairAhead" type="RayCast3D" parent="."]
 unique_name_in_owner = true

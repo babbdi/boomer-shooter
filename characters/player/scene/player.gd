@@ -16,6 +16,11 @@ var cam_aligned_wish_dir := Vector3.ZERO
 var noclip_speed_mult := 3.0
 var noclip := false
 
+## CROUCH
+
+const CROUCH_TRANSLATE = 0.7
+const CROUCH_JUMP_ADD = CROUCH_TRANSLATE * 0.9 #o quanto vai subir quando agachar (o pulinho/ impulso de jogo tipo cs)
+var is_crouched := false
 @export_group("ground movement")
 @export var jump_velocity := 6.0
 @export var auto_bhop := true
@@ -32,6 +37,7 @@ var _last_frame_was_on_floor := -INF
 @export var air_cap := 0.85 # conseguir surfar em rampas mais altas, quanto maior o valor mais facil de "grudar" nelas
 @export var air_accel := 800.0 
 @export var air_move_speed := 500.0
+
 
 func _ready() -> void:
 	pass
@@ -109,6 +115,8 @@ func _physics_process(delta: float) -> void:
 	## https://youtu.be/ZJr2qUrzEqg?t=779
 	wish_dir = self.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	cam_aligned_wish_dir = camera.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
+	
+	_handle_crouch(delta)
 	if not _handle_noclip(delta):
 		if is_on_floor() or _snapped_to_stair_last_frame:
 			if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
@@ -205,15 +213,15 @@ func _snap_up_stairs_check(delta : float) -> bool:
 var _saved_camera_global_pos := Vector3(0,0,0)
 func _save_camera_pos_for_smoothing() -> void:
 	if _saved_camera_global_pos == Vector3(0,0,0):
-		_saved_camera_global_pos = camera.global_position
+		_saved_camera_global_pos = %cameraSmooth.global_position
 func _slide_camera_smooth_back_to_origin(delta : float) -> void:
 	if _saved_camera_global_pos == null: return
-	camera.global_position.y = _saved_camera_global_pos.y
-	camera.position.y = clampf(camera.position.y, -0.7, -0.7) # Clamp incase teleported
+	%cameraSmooth.global_position.y = _saved_camera_global_pos.y
+	%cameraSmooth.position.y = clampf(camera.position.y, -CROUCH_TRANSLATE, CROUCH_TRANSLATE) # Clamp incase teleported
 	var move_amount : float = max(self.velocity.length() * delta, walk_speed/2 * delta)
-	camera.position.y = move_toward(camera.position.y, 0.0, move_amount)
-	_saved_camera_global_pos = camera.global_position
-	if camera.position.y == 0:
+	%cameraSmooth.position.y = move_toward(%cameraSmooth.position.y, 0.0, move_amount)
+	_saved_camera_global_pos = %cameraSmooth.global_position
+	if %cameraSmooth.position.y == 0:
 		_saved_camera_global_pos = Vector3(0,0,0) # Stop smoothing camera
 func _run_body_test_motion(from : Transform3D, motion : Vector3, result : PhysicsTestMotionResult3D) -> bool:
 	if not result: result = PhysicsTestMotionResult3D.new()
@@ -223,6 +231,8 @@ func _run_body_test_motion(from : Transform3D, motion : Vector3, result : Physic
 	return PhysicsServer3D.body_test_motion(self.get_rid(), params, result)
 
 func get_move_speed() -> float:
+	if is_crouched:
+		return walk_speed * 0.8
 	return sprint_speed if Input.is_action_pressed("sprint") else walk_speed
 
 func _headbob_effect(delta : float) -> void:
@@ -232,6 +242,32 @@ func _headbob_effect(delta : float) -> void:
 		cos(headbob_time * HEADBOB_FREQUENCY) * HEADBOB_MOVE_AMOUNT,
 		0,
 	)
+
+## AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR 
+@onready var _original_capsule_height : float = $cs_player.shape.height
+func _handle_crouch(delta : float) -> void:
+	var was_crouched_last_frame := is_crouched
+	if Input.is_action_pressed("crouch"):
+		is_crouched = true
+	elif is_crouched and not self.test_move(self.transform, Vector3(0,CROUCH_TRANSLATE,0)):
+		is_crouched = false
+	
+	# permite que quando agacha vc da um pulinho extra
+	var translate_y_if_possible := 0.0
+	if was_crouched_last_frame != is_crouched and not is_on_floor() and not _snapped_to_stair_last_frame:
+		translate_y_if_possible = CROUCH_JUMP_ADD if is_crouched else -CROUCH_JUMP_ADD
+	# se certifica q a cabeça do player nao seja inficada no teto
+	if translate_y_if_possible != 0.0:
+		var result := KinematicCollision3D.new()
+		self.test_move(self.global_transform, Vector3(0,translate_y_if_possible, 0), result)
+		self.position.y += result.get_travel().y
+		head.position.y -= result.get_travel().y 
+		head.position.y = clampf(head.position.y, -CROUCH_TRANSLATE, 0)
+		
+	head.position.y = move_toward(head.position.y, -CROUCH_TRANSLATE if is_crouched else 0, 7.0 * delta)
+	$cs_player.shape.height = _original_capsule_height - CROUCH_TRANSLATE if is_crouched else _original_capsule_height
+	$cs_player.position.y = $cs_player.shape.height / 2
+
 
 var _cur_gamepad_look := Vector2()
 func _handle_controller_look_input(delta: float) -> void:
