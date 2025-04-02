@@ -332,9 +332,9 @@ func _handle_controller_look_input(delta: float) -> void:
 func _tilt_camera(delta : float) -> void:
 	%camera_tilt.global_position.x = self.global_position.x + wish_dir.normalized().x * 1
 	%camera_tilt.global_position.z = self.global_position.z + wish_dir.normalized().z * 1
-	if %camera_tilt.position.x <= -0.7 && %camera_tilt.position.z <= -0.7:
+	if %camera_tilt.position.x <= -0.7 && %camera_tilt.position.z <= -0.7 && get_move_speed() == sprint_speed:
 		head.rotate_z(deg_to_rad(0.0525))
-	elif %camera_tilt.position.x >= 0.7 && %camera_tilt.position.z <= -0.7:
+	elif %camera_tilt.position.x >= 0.7 && %camera_tilt.position.z <= -0.7 && get_move_speed() == sprint_speed:
 		head.rotate_z(deg_to_rad(-0.0525))
 	else:
 		head.rotation.z = lerp_angle(head.rotation.z, 0.0, 2 * delta)
