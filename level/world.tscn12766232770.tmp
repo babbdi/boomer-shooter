@@ -75,8 +75,8 @@ path_joined = false
 material = SubResource("StandardMaterial3D_nadbi")
 
 [node name="WaterMaker3D" parent="." instance=ExtResource("4_nadbi")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.891, -7.52733, -19.0932)
-size = Vector3(26.2921, 14.7611, 13.2667)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.7097, -7.52733, -19.0234)
+size = Vector3(25.3066, 14.7611, 12.649)
 material = SubResource("StandardMaterial3D_gsqr6")
 
 [editable path="debugLevel"]

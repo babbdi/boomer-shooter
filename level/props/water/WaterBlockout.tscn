@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://fq1niqdf0bvb"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oyacx"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.243137)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oyacx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yfted"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="WaterBlockout" type="CSGBox3D"]
+material = SubResource("StandardMaterial3D_oyacx")
+
+[node name="SwimmableArea3D" type="Area3D" parent="." groups=["water_area"]]
+unique_name_in_owner = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SwimmableArea3D"]
+unique_name_in_owner = true
+shape = SubResource("BoxShape3D_oyacx")
+
+[node name="FogVolume" type="FogVolume" parent="."]
+unique_name_in_owner = true
+size = Vector3(1, 1, 1)
+
+[node name="CameraPosShapeCollision" type="ShapeCast3D" parent="."]
+shape = SubResource("BoxShape3D_yfted")
+target_position = Vector3(0, 0.1, 0)

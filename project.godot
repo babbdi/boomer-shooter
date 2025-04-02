@@ -24,8 +24,13 @@ gdscript/warnings/untyped_declaration=2
 folder_colors={
 "res://characters/": "purple",
 "res://level/": "green",
+"res://level/props/water/": "blue",
 "res://textures/": "red"
 }
+
+[global_group]
+
+water_area=""
 
 [input]
 
@@ -102,6 +107,15 @@ crouch={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="Player"
+
 [physics]
 
 3d/default_gravity=12.0
+
+[rendering]
+
+environment/volumetric_fog/volume_size=256
+environment/volumetric_fog/volume_depth=256

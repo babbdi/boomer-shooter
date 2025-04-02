@@ -17,10 +17,11 @@ var noclip_speed_mult := 3.0
 var noclip := false
 
 ## CROUCH
-
 const CROUCH_TRANSLATE = 0.7
 const CROUCH_JUMP_ADD = CROUCH_TRANSLATE * 0.9 #o quanto vai subir quando agachar (o pulinho/ impulso de jogo tipo cs)
 var is_crouched := false
+
+
 @export_group("ground movement")
 @export var jump_velocity := 6.0
 @export var auto_bhop := true
@@ -38,6 +39,7 @@ var _last_frame_was_on_floor := -INF
 @export var air_accel := 800.0 
 @export var air_move_speed := 500.0
 
+@export var swim_up_speed := 10.0
 
 func _ready() -> void:
 	pass
@@ -66,6 +68,21 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	_handle_controller_look_input(delta)
 
+func _handle_water_physics(delta : float) -> bool:
+	if get_tree().get_nodes_in_group("water_area").all(func(area : Node3D) -> bool: return !area.overlaps_body(self)):
+		return false
+		
+	if not is_on_floor():
+		velocity.y -= ProjectSettings.get_setting("physics/3d/default_gravity") * 0.1 * delta
+	
+	self.velocity += cam_aligned_wish_dir * get_move_speed() * delta
+	
+	if Input.is_action_pressed("jump"):
+		self.velocity.y += swim_up_speed * delta
+		
+	self.velocity = self.velocity.lerp(Vector3.ZERO, 2 * delta)
+	return true
+	
 func _handle_air_physics(delta : float) -> void:
 	self.velocity.y -= ProjectSettings.get_setting("physics/3d/default_gravity") * delta
 	
@@ -118,13 +135,14 @@ func _physics_process(delta: float) -> void:
 	
 	_handle_crouch(delta)
 	if not _handle_noclip(delta):
-		if is_on_floor() or _snapped_to_stair_last_frame:
-			if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
-				self.velocity.y = jump_velocity
-			_handle_ground_physics(delta)
-		else:
-			_handle_air_physics(delta)
-		
+		if not _handle_water_physics(delta):
+			if is_on_floor() or _snapped_to_stair_last_frame:
+				if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
+					self.velocity.y = jump_velocity
+				_handle_ground_physics(delta)
+			else:
+				_handle_air_physics(delta)
+			
 		if not _snap_up_stairs_check(delta):
 			# Because _snap_up_stairs_check moves the body manually, don't call move_and_slide
 			# This should be fine since we ensure with the body_test_motion that it doesn't 
