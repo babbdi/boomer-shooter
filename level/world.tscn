@@ -1,38 +1,24 @@
-[gd_scene load_steps=12 format=3 uid="uid://tus5igjalm37"]
+[gd_scene load_steps=7 format=3 uid="uid://tus5igjalm37"]
 
 [ext_resource type="PackedScene" uid="uid://bk8lvlxjxkt2d" path="res://characters/player/scene/player.tscn" id="2_sw3g3"]
 [ext_resource type="PackedScene" uid="uid://c1s5vdgssdq6u" path="res://level/debug/scene/debug_level.tscn" id="2_tjjer"]
-[ext_resource type="Texture2D" uid="uid://bmo3i6smairbs" path="res://textures/level/debug/debugRed.jpg" id="3_tjjer"]
-[ext_resource type="PackedScene" uid="uid://ca0wevg1lb4rx" path="res://level/props/water/WaterMaker3D/WaterMaker3D.tscn" id="4_nadbi"]
 
-[sub_resource type="Curve3D" id="Curve3D_sw3g3"]
-_data = {
-"points": PackedVector3Array(0, 13.8461, -0.227917, 0, -13.8461, 0.227917, 0.394653, -0.269494, 3.27743, 0, 1.50152, 2.97469, 0, -1.50152, -2.97469, 0.394645, -21.6322, -6.79563, 0, 0, 0, 0, 0, 0, 0.394645, -31.4252, -24.8551, 0, -0.321869, 10.2534, 0, 0.321869, -10.2534, 0.394645, -38.2124, -48.4237, 0, -3.1284, 5.42245, 0, 3.1284, -5.42245, 0.394645, -26.3614, -74.4695, 3.05176e-05, -5.79149, 5.33124, -3.05176e-05, 5.79149, -5.33124, 0.130947, -4.06404, -96.964, -3.05176e-05, -8.82646, 8.5894, 3.05176e-05, 8.82646, -8.5894, -0.000588399, 15.2036, -116.266),
-"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0)
-}
-point_count = 7
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lx6e4"]
-albedo_texture = ExtResource("3_tjjer")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nadbi"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_lx6e4"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wg66v"]
 resource_local_to_scene = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hx6qw"]
 resource_local_to_scene = true
 seamless = true
 as_normal_map = true
-noise = SubResource("FastNoiseLite_lx6e4")
+noise = SubResource("FastNoiseLite_wg66v")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_riu67"]
 resource_local_to_scene = true
 seamless = true
 as_normal_map = true
-noise = SubResource("FastNoiseLite_lx6e4")
+noise = SubResource("FastNoiseLite_wg66v")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gsqr6"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xcv0f"]
 resource_local_to_scene = true
 transparency = 1
 cull_mode = 2
@@ -53,30 +39,7 @@ uv1_world_triplanar = true
 
 [node name="debugLevel" parent="." instance=ExtResource("2_tjjer")]
 
-[node name="Path3D" type="Path3D" parent="."]
-transform = Transform3D(6.43132, 0, 0, 0, 0.661337, 0, 0, 0, 1, 0, 0, -28.7654)
-curve = SubResource("Curve3D_sw3g3")
-
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Path3D"]
-material_override = SubResource("StandardMaterial3D_lx6e4")
-use_collision = true
-polygon = PackedVector2Array(0, 0, 0, 1, -5.82, 0.53)
-mode = 2
-path_node = NodePath("..")
-path_interval_type = 0
-path_interval = 1.0
-path_simplify_angle = 0.0
-path_rotation = 2
-path_rotation_accurate = false
-path_local = true
-path_continuous_u = true
-path_u_distance = 1.0
-path_joined = false
-material = SubResource("StandardMaterial3D_nadbi")
-
-[node name="WaterMaker3D" parent="." instance=ExtResource("4_nadbi")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.891, -7.52733, -19.0932)
-size = Vector3(26.2921, 14.7611, 13.2667)
-material = SubResource("StandardMaterial3D_gsqr6")
+[node name="WaterMaker3D" parent="debugLevel" index="11"]
+material = SubResource("StandardMaterial3D_xcv0f")
 
 [editable path="debugLevel"]

@@ -66,6 +66,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			noclip_speed_mult = max(0.1, noclip_speed_mult * 0.9)
 
 func _process(delta: float) -> void:
+	_tilt_camera(delta)
 	_handle_controller_look_input(delta)
 
 func _handle_water_physics(delta : float) -> bool:
@@ -133,6 +134,10 @@ func _physics_process(delta: float) -> void:
 	wish_dir = self.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	cam_aligned_wish_dir = camera.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	
+
+
+		
+		
 	_handle_crouch(delta)
 	if not _handle_noclip(delta):
 		if not _handle_water_physics(delta):
@@ -147,7 +152,8 @@ func _physics_process(delta: float) -> void:
 			# Because _snap_up_stairs_check moves the body manually, don't call move_and_slide
 			# This should be fine since we ensure with the body_test_motion that it doesn't 
 			# collide with anything except the stairs it's moving up to.
-			#_push_away_rigid_bodies() # Call before move_and_slide()
+			_push_away_rigid_bodies() # Call before move_and_slide()
+			
 			move_and_slide()
 			_snap_down_to_stairs_check()
 	_slide_camera_smooth_back_to_origin(delta)
@@ -261,6 +267,29 @@ func _headbob_effect(delta : float) -> void:
 		0,
 	)
 
+## EMPURRAR EMPURRAR EMPURRAR EMPURRAR EMPURRAR EMPURRAR EMPURRAR EMPURRAR EMPURRAR EMPURRAR EMPURRAR 
+func _push_away_rigid_bodies() -> void:
+	for i in get_slide_collision_count():
+		var c := get_slide_collision(i)
+		if c.get_collider() is RigidBody3D:
+			var push_dir := -c.get_normal()
+			# How much velocity the object needs to increase to match player velocity in the push direction
+			var velocity_diff_in_push_dir : float = self.velocity.dot(push_dir) - c.get_collider().linear_velocity.dot(push_dir)
+			# Only count velocity towards push dir, away from character
+			velocity_diff_in_push_dir = max(0., velocity_diff_in_push_dir)
+			# Objects with more mass than us should be harder to push. But doesn't really make sense to push faster than we are going
+			const MY_APPROX_MASS_KG = 80.0
+			var mass_ratio : float = min(1., MY_APPROX_MASS_KG / c.get_collider().mass)
+			# Optional add: Don't push object at all if it's 4x heavier or more
+			if mass_ratio < 0.25:
+				continue
+			# Don't push object from above/below
+			push_dir.y = 0
+			# 5.0 is a magic number, adjust to your needs
+			var push_force : float = mass_ratio * 5.0
+			c.get_collider().apply_impulse(push_dir * velocity_diff_in_push_dir * push_force, c.get_position() - c.get_collider().global_position)
+
+
 ## AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR 
 @onready var _original_capsule_height : float = $cs_player.shape.height
 func _handle_crouch(delta : float) -> void:
@@ -299,3 +328,14 @@ func _handle_controller_look_input(delta: float) -> void:
 	rotate_y(-_cur_gamepad_look.x * gamepad_look_sensitivity) # esquerda e direita
 	camera.rotate_x(-_cur_gamepad_look.y * gamepad_look_sensitivity) #cima e baixo
 	camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+
+func _tilt_camera(delta : float) -> void:
+	%camera_tilt.global_position.x = self.global_position.x + wish_dir.normalized().x * 1
+	%camera_tilt.global_position.z = self.global_position.z + wish_dir.normalized().z * 1
+	if %camera_tilt.position.x <= -0.7 && %camera_tilt.position.z <= -0.7:
+		head.rotate_z(deg_to_rad(0.0525))
+	elif %camera_tilt.position.x >= 0.7 && %camera_tilt.position.z <= -0.7:
+		head.rotate_z(deg_to_rad(-0.0525))
+	else:
+		head.rotation.z = lerp_angle(head.rotation.z, 0.0, 2 * delta)
+	head.rotation.z = clamp(head.rotation.z, -0.0525, 0.0525)
