@@ -68,6 +68,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	_tilt_camera(delta)
 	_handle_controller_look_input(delta)
+	if get_interactable_component_at_shapecast():
+		get_interactable_component_at_shapecast().hover_cursor(self)
+		if Input.is_action_just_pressed("interact"):
+			get_interactable_component_at_shapecast().interact_with()
 
 func _handle_water_physics(delta : float) -> bool:
 	if get_tree().get_nodes_in_group("water_area").all(func(area : Node3D) -> bool: return !area.overlaps_body(self)):
@@ -288,7 +292,16 @@ func _push_away_rigid_bodies() -> void:
 			# 5.0 is a magic number, adjust to your needs
 			var push_force : float = mass_ratio * 5.0
 			c.get_collider().apply_impulse(push_dir * velocity_diff_in_push_dir * push_force, c.get_position() - c.get_collider().global_position)
-
+			
+## INTERACT INTERACT INTERACT INTERACT INTERACT INTERACT INTERACT INTERACT INTERACT INTERACT 
+func get_interactable_component_at_shapecast() -> InteractableComponent:
+	for i : int in %sc_interactable.get_collision_count():
+		# se colidir com o player
+		if i > 0 and %sc_interactable.get_collider(0) != $".":
+			return null
+		if %sc_interactable.get_collider(i).get_node_or_null("InteractableComponent") is InteractableComponent:
+			return %sc_interactable.get_collider(i).get_node_or_null("InteractableComponent")
+	return null
 
 ## AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR 
 @onready var _original_capsule_height : float = $cs_player.shape.height

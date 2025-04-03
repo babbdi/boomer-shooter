@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://tus5igjalm37"]
+[gd_scene load_steps=7 format=3 uid="uid://tus5igjalm37"]
 
 [ext_resource type="PackedScene" uid="uid://bk8lvlxjxkt2d" path="res://characters/player/scene/player.tscn" id="2_sw3g3"]
 [ext_resource type="PackedScene" uid="uid://c1s5vdgssdq6u" path="res://level/debug/scene/debug_level.tscn" id="2_tjjer"]
-[ext_resource type="PackedScene" uid="uid://bn6iocwcmfdk7" path="res://level/debug/scene/debug_button.tscn" id="3_tjjer"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_wg66v"]
 resource_local_to_scene = true
@@ -44,7 +43,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2, 0, -20.4)
 [node name="WaterMaker3D" parent="debugLevel" index="11"]
 material = SubResource("StandardMaterial3D_xcv0f")
 
-[node name="debugButton" parent="." instance=ExtResource("3_tjjer")]
-transform = Transform3D(4.37114e-08, 1, 8.74228e-08, 1, -4.37114e-08, 0, 3.82137e-15, 8.74228e-08, -1, -9.75754, 2.25668, -16.4739)
-
 [editable path="debugLevel"]
+[editable path="debugLevel/debug_button"]
+[editable path="debugLevel/debug_button/debugButton"]

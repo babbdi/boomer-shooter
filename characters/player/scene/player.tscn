@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bk8lvlxjxkt2d"]
+[gd_scene load_steps=6 format=3 uid="uid://bk8lvlxjxkt2d"]
 
 [ext_resource type="Script" uid="uid://lbedbhvtj8uf" path="res://characters/player/scene/player.gd" id="1_a4aai"]
 
@@ -6,11 +6,15 @@
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_ie77o"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_a4aai"]
+radius = 0.4
+
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_a4aai"]
 radius = 0.125
 height = 0.25
 
 [node name="player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "rc_stairAhead", "rc_stairBelow")]
+platform_on_leave = 2
 script = ExtResource("1_a4aai")
 head = NodePath("headOriginalPosition/cameraSmooth/head")
 camera = NodePath("headOriginalPosition/cameraSmooth/head/Camera3D")
@@ -34,6 +38,15 @@ unique_name_in_owner = true
 [node name="head" type="Node3D" parent="headOriginalPosition/cameraSmooth"]
 
 [node name="Camera3D" type="Camera3D" parent="headOriginalPosition/cameraSmooth/head"]
+
+[node name="sc_interactable" type="ShapeCast3D" parent="headOriginalPosition/cameraSmooth/head/Camera3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.1)
+shape = SubResource("SphereShape3D_a4aai")
+target_position = Vector3(0, 0, 0)
+max_results = 2
+collision_mask = 17
+collide_with_areas = true
 
 [node name="LookAtModifier3D" type="LookAtModifier3D" parent="headOriginalPosition"]
 
