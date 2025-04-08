@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5hokc0cgsc01"]
+
+[ext_resource type="PackedScene" uid="uid://frot5kr1uqhh" path="res://debug/level/blend/ruler001.blend" id="1_k0grm"]
+
+[node name="ruler001" instance=ExtResource("1_k0grm")]
+
+[node name="Skeleton3D" parent="Armature" index="0"]
+bones/1/rotation = Quaternion(-3.7749e-08, -4.22471e-19, -4.22471e-19, 1)
+bones/2/rotation = Quaternion(0, 0, -3.08149e-33, 1)
+bones/3/rotation = Quaternion(3.55271e-15, 5.16988e-26, 5.16988e-26, 1)
+bones/4/rotation = Quaternion(0, -7.75482e-26, -7.75482e-26, 1)
+bones/5/rotation = Quaternion(3.55271e-15, 1.54074e-33, 2.58494e-26, 1)
+bones/6/rotation = Quaternion(-1.42109e-14, 2.58494e-26, 5.16988e-26, 1)
+bones/7/rotation = Quaternion(-1.06581e-14, -4.62223e-33, 1.54074e-33, 1)
+
+[node name="AnimationPlayer" parent="." index="1"]
+autoplay = "rulerBoing"

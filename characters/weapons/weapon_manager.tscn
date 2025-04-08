@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cb0fnc4vlyd74"]
+
+[ext_resource type="Script" uid="uid://pfmnpv5hlto2" path="res://characters/weapons/weapon_manager.gd" id="1_cdsfw"]
+
+[node name="WeaponManager" type="Node3D"]
+script = ExtResource("1_cdsfw")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+volume_db = -60.0

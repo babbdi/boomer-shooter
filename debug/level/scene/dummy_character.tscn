@@ -1,0 +1,83 @@
+[gd_scene load_steps=6 format=3 uid="uid://cktcd8ioganjm"]
+
+[ext_resource type="PackedScene" uid="uid://5icien0wq2kx" path="res://debug/level/blend/debug_dummy_body.tscn" id="1_btc80"]
+
+[sub_resource type="GDScript" id="GDScript_ki352"]
+script/source = "class_name Enemy
+extends CharacterBody3D
+
+var health : float :
+	set(v):
+		FloatingText.spawn_floating_text($head.global_position, str(health - v), $head)
+		$debugDummy_body/AnimationPlayer.play(\"take_damage\")
+		health = v
+
+
+func take_damage(damage) -> void:
+	health -= damage
+	
+func _process(delta: float) -> void:
+	if $debugDummy_body/AnimationPlayer.current_animation != \"take_damage\" and $debugDummy_body/AnimationPlayer.current_animation != \"idle\":
+		$debugDummy_body/AnimationPlayer.play(\"idle\")
+"
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_btc80"]
+radius = 0.3
+height = 1.4
+
+[sub_resource type="GDScript" id="GDScript_btc80"]
+script/source = "extends Area3D
+
+func take_damage(damage : float) -> void:
+	get_parent().health -= damage * 1.5
+	print(damage * 1.5)
+	
+"
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_btc80"]
+radius = 0.3
+
+[node name="DummyCharacter" type="CharacterBody3D"]
+script = SubResource("GDScript_ki352")
+
+[node name="debugDummy_body" parent="." instance=ExtResource("1_btc80")]
+
+[node name="Skeleton3D" parent="debugDummy_body/Armature" index="0"]
+bones/1/scale = Vector3(1.00043, 1.00043, 1.00043)
+bones/7/rotation = Quaternion(4.27223e-08, -6.22952e-09, 0.806577, 0.59113)
+bones/8/rotation = Quaternion(-4.45904e-08, 9.32486e-08, -0.288991, 0.957332)
+bones/9/rotation = Quaternion(-2.57848e-08, -1.15775e-07, -0.214879, 0.976641)
+bones/10/rotation = Quaternion(-0.243825, 0.108553, -0.385931, 0.883076)
+bones/11/position = Vector3(-0.140259, 0.518327, 0.0445685)
+bones/11/rotation = Quaternion(0.181171, 0.195989, -0.712145, 0.649318)
+bones/11/scale = Vector3(1.00438, 1.00438, 1.00438)
+bones/12/rotation = Quaternion(4.27223e-08, 6.22952e-09, -0.806577, 0.59113)
+bones/13/rotation = Quaternion(-5.2493e-08, -9.39979e-08, 0.242864, 0.970061)
+bones/14/rotation = Quaternion(-1.04082e-08, 8.72946e-08, 0.362907, 0.931825)
+bones/15/rotation = Quaternion(-0.247424, -0.10008, 0.355247, 0.89586)
+bones/16/position = Vector3(0.169711, 0.481094, 0.0221122)
+bones/16/rotation = Quaternion(0.196868, -0.180216, 0.655581, 0.706385)
+bones/16/scale = Vector3(1.00194, 1.00194, 1.00194)
+bones/17/rotation = Quaternion(0.867109, 3.40336e-18, 3.40337e-18, -0.498118)
+bones/17/scale = Vector3(1.35035, 1.35035, 1.35035)
+bones/19/rotation = Quaternion(-6.62466e-09, -9.64035e-08, -0.0602751, 0.998182)
+bones/20/rotation = Quaternion(-4.16966e-08, -3.72669e-08, -0.170672, 0.985328)
+bones/22/rotation = Quaternion(-6.62466e-09, 9.64035e-08, 0.0602751, 0.998182)
+bones/23/rotation = Quaternion(-4.16966e-08, 3.72669e-08, 0.170672, 0.985328)
+
+[node name="body" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_btc80")
+
+[node name="Area3D" type="Area3D" parent="."]
+script = SubResource("GDScript_btc80")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.02946, 0)
+shape = SubResource("SphereShape3D_btc80")
+debug_color = Color(0.444521, 0.895225, 1, 0.42)
+
+[node name="head" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+
+[editable path="debugDummy_body"]

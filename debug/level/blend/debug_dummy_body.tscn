@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://5icien0wq2kx"]
+
+[ext_resource type="PackedScene" uid="uid://b7u06fsb4pbuf" path="res://debug/level/blend/dummy/debugDummy1.blend" id="1_a7ouc"]
+
+[node name="debugDummy_body" instance=ExtResource("1_a7ouc")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)

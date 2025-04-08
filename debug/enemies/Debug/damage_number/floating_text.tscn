@@ -1,0 +1,126 @@
+[gd_scene load_steps=8 format=3 uid="uid://ct020iu2828mu"]
+
+[ext_resource type="Texture2D" uid="uid://rst88ws2tkv0" path="res://debug/textures/level/debugPink.jpg" id="1_4x64x"]
+[ext_resource type="Script" uid="uid://c3k7r7r6o216m" path="res://debug/enemies/Debug/damage_number/floating_text.gd" id="1_tccuk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nvl3r"]
+shading_mode = 0
+albedo_texture = ExtResource("1_4x64x")
+refraction_scale = 1.0
+uv1_scale = Vector3(0.995, 0.995, 0.995)
+billboard_mode = 2
+billboard_keep_scale = true
+
+[sub_resource type="TextMesh" id="TextMesh_tccuk"]
+material = SubResource("StandardMaterial3D_nvl3r")
+text = "200"
+
+[sub_resource type="Animation" id="Animation_au24l"]
+resource_name = "spawn"
+length = 2.0
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.176, 0.382, 0), Vector3(0.224, 0.542, 0), Vector3(-0.176, 0.707, 0), Vector3(0.124, 0.907, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:rotation")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, 0.440015), Vector3(0, 0, -0.43265), Vector3(0, 0, 0.440015), Vector3(0, 0, -0.345383)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:scale")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.166667, 1.5, 1.8, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0.000999987, 0.000999987, 0.000999987), Vector3(1, 1, 1), Vector3(1.185, 1.185, 1.185), Vector3(1.435, 1.435, 1.435), Vector3(0.001, 0.001, 0.001)]
+}
+
+[sub_resource type="Animation" id="Animation_tccuk"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2lvdi"]
+_data = {
+&"RESET": SubResource("Animation_tccuk"),
+&"spawn": SubResource("Animation_au24l")
+}
+
+[node name="Label" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("TextMesh_tccuk")
+script = ExtResource("1_tccuk")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_2lvdi")
+}
+autoplay = "spawn"

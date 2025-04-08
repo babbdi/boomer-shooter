@@ -1,0 +1,72 @@
+[gd_scene load_steps=11 format=3 uid="uid://nwhb4w8wv1pi"]
+
+[ext_resource type="PackedScene" uid="uid://co4dckl14iwkj" path="res://debug/level/scene/debug_level_body.tscn" id="1_t8386"]
+[ext_resource type="PackedScene" uid="uid://bp5mofjgvwh0a" path="res://debug/level/scene/ruler.tscn" id="3_8blwi"]
+[ext_resource type="PackedScene" uid="uid://ca0wevg1lb4rx" path="res://level/props/interactable/water/WaterMaker3D/WaterMaker3D.tscn" id="4_54gt6"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_t8386"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_611ib"]
+sky_material = SubResource("ProceduralSkyMaterial_t8386")
+
+[sub_resource type="Environment" id="Environment_8blwi"]
+background_mode = 2
+sky = SubResource("Sky_611ib")
+tonemap_mode = 2
+glow_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0
+volumetric_fog_albedo = Color(0.159241, 0.545461, 0.80451, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_611ib"]
+resource_local_to_scene = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_8blwi"]
+resource_local_to_scene = true
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_611ib")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_affft"]
+resource_local_to_scene = true
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_611ib")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nyxm8"]
+resource_local_to_scene = true
+transparency = 1
+cull_mode = 2
+depth_draw_mode = 1
+albedo_color = Color(0.309804, 0.541176, 0.866667, 0.388235)
+roughness = 0.0
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_8blwi")
+refraction_enabled = true
+refraction_texture = SubResource("NoiseTexture2D_affft")
+uv1_scale = Vector3(0.04, 0.04, 0.04)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[node name="debug_level" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_8blwi")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="debugLevel" parent="." instance=ExtResource("1_t8386")]
+
+[node name="water" type="Node3D" parent="."]
+
+[node name="WaterMaker3D" parent="water" instance=ExtResource("4_54gt6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.7473, -7.27112, -19.2874)
+size = Vector3(25.6947, 14.1414, 13.4253)
+material = SubResource("StandardMaterial3D_nyxm8")
+
+[node name="ruler" parent="." instance=ExtResource("3_8blwi")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -25.4825, 0.0796115, -12.6163)

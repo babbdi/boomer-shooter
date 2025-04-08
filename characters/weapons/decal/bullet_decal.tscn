@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://ls31bonr54rt"]
+
+[ext_resource type="Texture2D" uid="uid://bxjdf0eyllifl" path="res://debug/textures/decal/debug_decal/debug_decal.png" id="1_b6m17"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_21cp1"]
+angle_min = 1.07288e-05
+angle_max = 360.0
+direction = Vector3(0, 1, 0)
+spread = 64.518
+initial_velocity_min = 0.1
+initial_velocity_max = 1.0
+angular_velocity_min = -1.60933e-05
+angular_velocity_max = 31.0
+gravity = Vector3(0, -2, 0)
+collision_mode = 1
+collision_friction = 0.36
+collision_bounce = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrttn"]
+albedo_color = Color(0.299547, 0.299547, 0.299547, 1)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_e7xxs"]
+material = SubResource("StandardMaterial3D_wrttn")
+size = Vector2(0.04, 0.025)
+
+[node name="BulletDecal" type="Decal"]
+size = Vector3(0.25, 0.25, 0.25)
+texture_albedo = ExtResource("1_b6m17")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0534495, 0)
+emitting = false
+amount = 32
+lifetime = 15.0
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_21cp1")
+draw_pass_1 = SubResource("QuadMesh_e7xxs")

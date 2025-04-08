@@ -39,10 +39,12 @@ var _last_frame_was_on_floor := -INF
 @export var air_accel := 800.0 
 @export var air_move_speed := 500.0
 
+@export var climb_speed := 7.0
 @export var swim_up_speed := 10.0
 
 func _ready() -> void:
 	pass
+	#update_view_and_world_model_masks()
 
 func _unhandled_input(event: InputEvent) -> void:
 	
@@ -138,12 +140,12 @@ func _physics_process(delta: float) -> void:
 	wish_dir = self.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	cam_aligned_wish_dir = camera.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	
-
-
-		
-		
+	
+	
+	
+	
 	_handle_crouch(delta)
-	if not _handle_noclip(delta):
+	if not _handle_noclip(delta) and not _handle_ladder_physics():
 		if not _handle_water_physics(delta):
 			if is_on_floor() or _snapped_to_stair_last_frame:
 				if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
@@ -302,6 +304,118 @@ func get_interactable_component_at_shapecast() -> InteractableComponent:
 		if %sc_interactable.get_collider(i).get_node_or_null("InteractableComponent") is InteractableComponent:
 			return %sc_interactable.get_collider(i).get_node_or_null("InteractableComponent")
 	return null
+## ESCADA VERTICAL ESCADA VERTICAL ESCADA VERTICAL ESCADA VERTICAL ESCADA VERTICAL ESCADA VERTICAL
+var _cur_ladder_climbing : Area3D = null
+func _handle_ladder_physics() -> bool:
+	# Keep track of whether already on ladder. If not already, check if overlapping a ladder area3d.
+	var was_climbing_ladder := _cur_ladder_climbing and _cur_ladder_climbing.overlaps_body(self)
+	if not was_climbing_ladder:
+		_cur_ladder_climbing = null
+		for ladder in get_tree().get_nodes_in_group("ladder_area3d"):
+			if ladder.overlaps_body(self):
+				_cur_ladder_climbing = ladder
+				break
+	if _cur_ladder_climbing == null:
+		return false
+	
+	# Set up variables. Most of this is going to be dependent on the player's relative position/velocity/input to the ladder.
+	var ladder_gtransform : Transform3D = _cur_ladder_climbing.global_transform
+	var pos_rel_to_ladder := ladder_gtransform.affine_inverse() * self.global_position
+	
+	var forward_move := Input.get_action_strength("up") - Input.get_action_strength("down")
+	var side_move := Input.get_action_strength("right") - Input.get_action_strength("left")
+	var ladder_forward_move := ladder_gtransform.affine_inverse().basis * camera.global_transform.basis * Vector3(0, 0, -forward_move)
+	var ladder_side_move := ladder_gtransform.affine_inverse().basis * camera.global_transform.basis * Vector3(side_move, 0, 0)
+	
+	# Strafe velocity is simple. Just take x component rel to ladder of both
+	var ladder_strafe_vel : float = climb_speed * (ladder_side_move.x + ladder_forward_move.x)
+	# For climb velocity, there are a few things to take into account:
+	# If strafing directly into the ladder, go up, if strafing away, go down
+	var ladder_climb_vel : float = climb_speed * -ladder_side_move.z
+	# When pressing forward & facing the ladder, the player likely wants to move up. Vice versa with down.
+	# So we will bias the direction (up/down) towards where we are looking by 45 degrees to give a greater margin for up/down detect.
+	var up_wish := Vector3.UP.rotated(Vector3(1,0,0), deg_to_rad(-45)).dot(ladder_forward_move)
+	ladder_climb_vel += climb_speed * up_wish
+	
+	# Only begin climbing ladders when moving towards them & prevent sticking to top of ladder when dismounting
+	# Trying to best match the player's intention when climbing on ladder
+	var should_dismount := false
+	if not was_climbing_ladder:
+		var mounting_from_top : bool = pos_rel_to_ladder.y > _cur_ladder_climbing.get_node("TopOfLadder").position.y
+		if mounting_from_top:
+			# They could be trying to get on from the top of the ladder, or trying to leave the ladder.
+			if ladder_climb_vel > 0: should_dismount = true
+		else:
+			# If not mounting from top, they are either falling or on floor.
+			# In which case, only stick to ladder if intentionally moving towards
+			if (ladder_gtransform.affine_inverse().basis * wish_dir).z >= 0: should_dismount = true
+		# Only stick to ladder if very close. Helps make it easier to get off top & prevents camera jitter
+		if abs(pos_rel_to_ladder.z) > 0.1: should_dismount = true
+	
+	# Let player step off onto floor
+	if is_on_floor() and ladder_climb_vel <= 0: should_dismount = true
+	
+	if should_dismount:
+		_cur_ladder_climbing = null
+		return false
+	
+	# Allow jump off ladder mid climb
+	if was_climbing_ladder and Input.is_action_just_pressed("jump"):
+		self.velocity = _cur_ladder_climbing.global_transform.basis.z * jump_velocity * 1.5
+		_cur_ladder_climbing = null
+		return false
+	
+	self.velocity = ladder_gtransform.basis * Vector3(ladder_strafe_vel, ladder_climb_vel, 0)
+	#self.velocity = self.velocity.limit_length(climb_speed) # Uncomment to turn off ladder boosting
+	
+	# Snap player onto ladder
+	pos_rel_to_ladder.z = 0
+	self.global_position = ladder_gtransform * pos_rel_to_ladder
+	
+	move_and_slide()
+	return true
+
+#const VIEW_MODEL_LAYER = 9
+#const WORLD_MODEL_LAYER = 2
+#func update_view_and_world_model_masks():
+	#for child in %WorldModel.find_children("*", "VisualInstance3D", true, false):
+		#child.set_layer_mask_value(1, false)
+		#child.set_layer_mask_value(WORLD_MODEL_LAYER, true)
+	#for child in %ViewModel.find_children("*", "VisualInstance3D", true, false):
+		#child.set_layer_mask_value(1, false)
+		#child.set_layer_mask_value(VIEW_MODEL_LAYER, true)
+		#if child is GeometryInstance3D:
+			#child.cast_shadow = false
+	#%Camera3D.set_cull_mask_value(WORLD_MODEL_LAYER, false)
+	#%ThirdPersonCamera3D.set_cull_mask_value(VIEW_MODEL_LAYER, false)
+
+## RECOIL RECOIL RECOIL RECOIL RECOIL RECOIL RECOIL RECOIL RECOIL RECOIL RECOIL RECOIL RECOIL RECOIL 
+var target_recoil := Vector2.ZERO
+var current_recoil := Vector2.ZERO
+const RECOIL_APPLY_SPEED : float = 10.0
+const RECOIL_RECOVER_SPEED : float = 7.0
+
+func add_recoil(pitch: float, yaw: float) -> void:
+	target_recoil.x += pitch
+	target_recoil.y += yaw
+
+func get_current_recoil() -> Vector2:
+	return current_recoil
+
+func update_recoil(delta: float) -> void:
+	# Slowly move target recoil back to 0,0
+	target_recoil = target_recoil.lerp(Vector2.ZERO, RECOIL_RECOVER_SPEED * delta)
+	
+	# Slowly move current recoil to the target recoil
+	var prev_recoil := current_recoil
+	current_recoil = current_recoil.lerp(target_recoil, RECOIL_APPLY_SPEED * delta)
+	var recoil_difference := current_recoil - prev_recoil
+	
+	# Rotate player/camera to current recoil
+	rotate_y(recoil_difference.y)
+	%Camera3D.rotate_x(recoil_difference.x)
+	%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+
 
 ## AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR AGACHAR 
 @onready var _original_capsule_height : float = $cs_player.shape.height
@@ -343,11 +457,13 @@ func _handle_controller_look_input(delta: float) -> void:
 	camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 
 func _tilt_camera(delta : float) -> void:
+	#print(str(%camera_tilt.position))
+	#$headOriginalPosition/cameraSmooth/head/Camera3D/MeshInstance3D2.mesh.text = str()
 	%camera_tilt.global_position.x = self.global_position.x + wish_dir.normalized().x * 1
 	%camera_tilt.global_position.z = self.global_position.z + wish_dir.normalized().z * 1
-	if %camera_tilt.position.x <= -0.7 && %camera_tilt.position.z <= -0.7 && get_move_speed() == sprint_speed:
+	if %camera_tilt.position.x <= -1.0 and get_move_speed() == sprint_speed: #&& %camera_tilt.position.z <= -0.7 && :
 		head.rotate_z(deg_to_rad(0.0525))
-	elif %camera_tilt.position.x >= 0.7 && %camera_tilt.position.z <= -0.7 && get_move_speed() == sprint_speed:
+	elif %camera_tilt.position.x >= 1.0 and get_move_speed() == sprint_speed:# %camera_tilt.position.z <= -0.7 
 		head.rotate_z(deg_to_rad(-0.0525))
 	else:
 		head.rotation.z = lerp_angle(head.rotation.z, 0.0, 2 * delta)

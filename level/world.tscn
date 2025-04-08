@@ -1,48 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://tus5igjalm37"]
+[gd_scene load_steps=4 format=3 uid="uid://tus5igjalm37"]
 
+[ext_resource type="PackedScene" uid="uid://nwhb4w8wv1pi" path="res://debug/level/scene/debug_level.tscn" id="1_tjjer"]
 [ext_resource type="PackedScene" uid="uid://bk8lvlxjxkt2d" path="res://characters/player/scene/player.tscn" id="2_sw3g3"]
-[ext_resource type="PackedScene" uid="uid://c1s5vdgssdq6u" path="res://level/debug/scene/debug_level.tscn" id="2_tjjer"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_wg66v"]
-resource_local_to_scene = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hx6qw"]
-resource_local_to_scene = true
-seamless = true
-as_normal_map = true
-noise = SubResource("FastNoiseLite_wg66v")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_riu67"]
-resource_local_to_scene = true
-seamless = true
-as_normal_map = true
-noise = SubResource("FastNoiseLite_wg66v")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xcv0f"]
-resource_local_to_scene = true
-transparency = 1
-cull_mode = 2
-depth_draw_mode = 1
-albedo_color = Color(0.309804, 0.541176, 0.866667, 0.388235)
-roughness = 0.0
-normal_enabled = true
-normal_texture = SubResource("NoiseTexture2D_hx6qw")
-refraction_enabled = true
-refraction_texture = SubResource("NoiseTexture2D_riu67")
-uv1_scale = Vector3(0.04, 0.04, 0.04)
-uv1_triplanar = true
-uv1_world_triplanar = true
+[ext_resource type="PackedScene" uid="uid://cktcd8ioganjm" path="res://debug/level/scene/dummy_character.tscn" id="3_tjjer"]
 
 [node name="World" type="Node3D"]
 
+[node name="debug_level" parent="." instance=ExtResource("1_tjjer")]
+
 [node name="player" parent="." instance=ExtResource("2_sw3g3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2, 0, -20.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.1737, 0.449872, -9.03914)
 
-[node name="debugLevel" parent="." instance=ExtResource("2_tjjer")]
-
-[node name="WaterMaker3D" parent="debugLevel" index="11"]
-material = SubResource("StandardMaterial3D_xcv0f")
-
-[editable path="debugLevel"]
-[editable path="debugLevel/debug_button"]
-[editable path="debugLevel/debug_button/debugButton"]
+[node name="DummyCharacter" parent="." instance=ExtResource("3_tjjer")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.7489, 0.0276194, -13.1808)
