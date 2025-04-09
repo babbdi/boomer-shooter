@@ -1,23 +1,15 @@
-[gd_scene load_steps=11 format=3 uid="uid://nwhb4w8wv1pi"]
+[gd_scene load_steps=9 format=3 uid="uid://nwhb4w8wv1pi"]
 
 [ext_resource type="PackedScene" uid="uid://co4dckl14iwkj" path="res://debug/level/scene/debug_level_body.tscn" id="1_t8386"]
 [ext_resource type="PackedScene" uid="uid://bp5mofjgvwh0a" path="res://debug/level/scene/ruler.tscn" id="3_8blwi"]
 [ext_resource type="PackedScene" uid="uid://ca0wevg1lb4rx" path="res://level/props/interactable/water/WaterMaker3D/WaterMaker3D.tscn" id="4_54gt6"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_t8386"]
-sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-
-[sub_resource type="Sky" id="Sky_611ib"]
-sky_material = SubResource("ProceduralSkyMaterial_t8386")
-
 [sub_resource type="Environment" id="Environment_8blwi"]
 background_mode = 2
-sky = SubResource("Sky_611ib")
 tonemap_mode = 2
 glow_enabled = true
 volumetric_fog_enabled = true
-volumetric_fog_density = 0.0
+volumetric_fog_density = 0.1974
 volumetric_fog_albedo = Color(0.159241, 0.545461, 0.80451, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_611ib"]
@@ -57,6 +49,7 @@ environment = SubResource("Environment_8blwi")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+visible = false
 shadow_enabled = true
 
 [node name="debugLevel" parent="." instance=ExtResource("1_t8386")]
