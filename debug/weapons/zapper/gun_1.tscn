@@ -126,9 +126,6 @@ _data = {
 [node name="gun_1" instance=ExtResource("1_ayqk4")]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
 
-[node name="zapper" parent="." index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-
 [node name="inner_part" parent="zapper" index="0"]
 surface_material_override/0 = ExtResource("2_84a0x")
 
