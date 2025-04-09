@@ -12,22 +12,7 @@
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -17.9737, 0.449872, -12.0391)
 
 [node name="DummyCharacter" parent="." instance=ExtResource("3_tjjer")]
-transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -11.3489, 2.98773, -12.3808)
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -11.3489, 0.08773, -12.3808)
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.9265, 2.53247, -12.3855)
-size = Vector3(0.146973, 6.06494, 0.211304)
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -10.9265, 4.40175, -12.3272)
-size = Vector3(0.146973, 3.92651, 0.211304)
-
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(0.229494, -0.819285, -0.525456, 0.118226, -0.512403, 0.850568, -0.966103, -0.257322, -0.0207326, -13.6396, 6.24957, -12.4)
-light_color = Color(0.969124, 0.958729, 0.964495, 1)
-light_volumetric_fog_energy = 0.354
-shadow_enabled = true
-spot_range = 14.392
-spot_attenuation = -0.52
-spot_angle = 32.4625
-spot_angle_attenuation = 0.241484
+[editable path="DummyCharacter"]
+[editable path="DummyCharacter/debugDummy_body"]

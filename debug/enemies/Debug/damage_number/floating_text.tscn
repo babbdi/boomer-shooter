@@ -1,18 +1,103 @@
-[gd_scene load_steps=8 format=3 uid="uid://ct020iu2828mu"]
+[gd_scene load_steps=9 format=3 uid="uid://ct020iu2828mu"]
 
-[ext_resource type="Texture2D" uid="uid://rst88ws2tkv0" path="res://debug/textures/level/debugPink.jpg" id="1_4x64x"]
+[ext_resource type="Texture2D" uid="uid://b00qg4o75lq02" path="res://debug/textures/level/debugWhite.jpg" id="1_2lvdi"]
 [ext_resource type="Script" uid="uid://c3k7r7r6o216m" path="res://debug/enemies/Debug/damage_number/floating_text.gd" id="1_tccuk"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nvl3r"]
-shading_mode = 0
-albedo_texture = ExtResource("1_4x64x")
-refraction_scale = 1.0
-uv1_scale = Vector3(0.995, 0.995, 0.995)
-billboard_mode = 2
-billboard_keep_scale = true
+[sub_resource type="Shader" id="Shader_2lvdi"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.4.1.stable's StandardMaterial3D.
 
-[sub_resource type="TextMesh" id="TextMesh_tccuk"]
-material = SubResource("StandardMaterial3D_nvl3r")
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx, unshaded;
+
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
+uniform ivec2 albedo_texture_size;
+uniform float point_size : hint_range(0.1, 128.0, 0.1);
+
+uniform float roughness : hint_range(0.0, 1.0);
+uniform sampler2D texture_metallic : hint_default_white, filter_linear_mipmap, repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r, filter_linear_mipmap, repeat_enable;
+
+uniform float specular : hint_range(0.0, 1.0, 0.01);
+uniform float metallic : hint_range(0.0, 1.0, 0.01);
+
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+uniform float viewmodel_fov = 75.0f;
+void vertex() {
+	UV = UV * uv1_scale.xy + uv1_offset.xy;
+	/* VIEW MODEL Z CLIP FIX CODE */
+	if (viewmodel_fov > 0.0) {
+		float onetanfov = 1.0f / tan(0.5f * (viewmodel_fov * PI / 180.0f));
+		float aspect = VIEWPORT_SIZE.x / VIEWPORT_SIZE.y;
+		// Optional: Modify projection matrix to change the FOV
+		PROJECTION_MATRIX[1][1] = -onetanfov;
+		PROJECTION_MATRIX[0][0] = onetanfov / aspect;
+	}
+	
+	
+	
+	// Billboard Mode: Y-Billboard
+	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
+			vec4(normalize(cross(vec3(0.0, 1.0, 0.0), MAIN_CAM_INV_VIEW_MATRIX[2].xyz)), 0.0),
+			vec4(0.0, 1.0, 0.0, 0.0),
+			vec4(normalize(cross(MAIN_CAM_INV_VIEW_MATRIX[0].xyz, vec3(0.0, 1.0, 0.0))), 0.0),
+			MODEL_MATRIX[3]);
+
+	// Billboard Keep Scale: Enabled
+	MODELVIEW_MATRIX = MODELVIEW_MATRIX * mat4(
+			vec4(length(MODEL_MATRIX[0].xyz), 0.0, 0.0, 0.0),
+			vec4(0.0, length(MODEL_MATRIX[1].xyz), 0.0, 0.0),
+			vec4(0.0, 0.0, length(MODEL_MATRIX[2].xyz), 0.0),
+			vec4(0.0, 0.0, 0.0, 1.0));
+	MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
+	POSITION = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(VERTEX.xyz, 1.0);
+	POSITION.z = mix(POSITION.z, POSITION.w, 0.9);
+}
+
+void fragment() {
+	vec2 base_uv = UV;
+
+	vec4 albedo_tex = texture(texture_albedo, base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+
+	float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	SPECULAR = specular;
+
+	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
+	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tccuk"]
+resource_local_to_scene = true
+render_priority = 0
+shader = SubResource("Shader_2lvdi")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("1_2lvdi")
+shader_parameter/albedo_texture_size = Vector2i(0, 0)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/specular = 0.0
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(9.97, 10.47, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/viewmodel_fov = 75.0
+
+[sub_resource type="TextMesh" id="TextMesh_2lvdi"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_tccuk")
+flip_faces = true
+uv2_padding = 1.42
 text = "200"
 
 [sub_resource type="Animation" id="Animation_tccuk"]
@@ -114,11 +199,15 @@ _data = {
 &"spawn": SubResource("Animation_au24l")
 }
 
-[node name="Label" type="MeshInstance3D"]
-mesh = SubResource("TextMesh_tccuk")
+[node name="floating_text" type="Node3D"]
+
+[node name="Label" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+gi_mode = 0
+mesh = SubResource("TextMesh_2lvdi")
 script = ExtResource("1_tccuk")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Label"]
 libraries = {
 &"": SubResource("AnimationLibrary_2lvdi")
 }

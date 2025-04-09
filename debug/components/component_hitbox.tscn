@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://ty3q62sbqlgp"]
+
+[ext_resource type="Script" uid="uid://d0d2h85pbnwfr" path="res://debug/components/component_hitbox.gd" id="1_3opil"]
+
+[node name="component_hitbox" type="Area3D"]
+script = ExtResource("1_3opil")
+use_parent_hitbox = true

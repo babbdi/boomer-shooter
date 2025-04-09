@@ -103,7 +103,7 @@ func get_amount_can_reload() -> int:
 
 func reload_pressed() -> void:
 	if reload_anim and weapon_manager.get_anim() == reload_anim:
-		print("mesma animação de reload")
+		#print("mesma animação de reload")
 		return
 	if get_amount_can_reload() <= 0:
 		print("não precisa recarregar - reload_pressed")
@@ -144,12 +144,19 @@ func fire_shot() -> void:
 		var obj := raycast.get_collider()
 		var nrml := raycast.get_collision_normal()
 		var pt := raycast.get_collision_point()
+		
+		var attack := Attack.new()
+		attack.attack_damage = damage
+		attack.attack_hit_location = pt
 		bullet_target_pos = pt
 		BulletDecalPool.spawn_bullet_decal(pt, nrml, obj, raycast.global_basis)
 		if obj is RigidBody3D:
 			obj.apply_impulse(-nrml * 5.0 / obj.mass, pt - obj.global_position)
 		if obj.has_method("take_damage"):
-			obj.take_damage(self.damage)
+			if obj is component_hitbox:
+				if obj.critical_spot:
+					attack.attack_crit = true
+			obj.take_damage(attack)
 	
 	weapon_manager.show_muzzle_flash()
 	if num_shots_fired % 2 == 0:

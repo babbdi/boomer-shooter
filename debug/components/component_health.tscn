@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://uqp4h2fileou"]
+
+[ext_resource type="Script" uid="uid://cdelv0ftc81j4" path="res://debug/components/component_health.gd" id="1_nucrw"]
+
+[node name="component_health" type="Node3D"]
+script = ExtResource("1_nucrw")
+current_health = 10.0

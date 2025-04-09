@@ -20,6 +20,8 @@ uniform vec3 uv2_offset = vec3(0., 0., 0.);
 
 uniform float viewmodel_fov = 75.0f;
 
+uniform vec3 billboard;
+
 void vertex() {
 	
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
@@ -41,6 +43,7 @@ void vertex() {
 	// So we mix z towards POSITION.w so that after perspective divsion, it will come out to 1.0 (near buffer since Z is reversed)
 	POSITION.z = mix(POSITION.z, POSITION.w, 0.9); // Could be higher mix val like 0.999 but I found 0.9 prevented 99% clipping w/ less artifacts than 0.999.
 	/* END VIEW MODEL Z CLIP FIX CODE */
+
 }
 
 // POSITION.xyz = POSITION.xyz / POSITION.w;

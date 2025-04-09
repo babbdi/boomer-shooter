@@ -25,5 +25,5 @@ magazine_capacity = 5.0
 reserve_ammo = inf
 max_reserve_ammo = inf
 auto_fire = true
-max_fire_rate_ms = 1000.0
+max_fire_rate_ms = 100.0
 metadata/_custom_type_script = "uid://dw4nhq3tconug"
