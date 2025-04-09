@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://nwhb4w8wv1pi"]
+[gd_scene load_steps=17 format=3 uid="uid://nwhb4w8wv1pi"]
 
 [ext_resource type="Texture2D" uid="uid://6gm72fw3kwrc" path="res://debug/level/scene/lilienstein_2k.hdr" id="1_affft"]
 [ext_resource type="PackedScene" uid="uid://co4dckl14iwkj" path="res://debug/level/scene/debug_level_body.tscn" id="1_t8386"]
 [ext_resource type="PackedScene" uid="uid://bp5mofjgvwh0a" path="res://debug/level/scene/ruler.tscn" id="3_8blwi"]
 [ext_resource type="PackedScene" uid="uid://ca0wevg1lb4rx" path="res://level/props/interactable/water/WaterMaker3D/WaterMaker3D.tscn" id="4_54gt6"]
+[ext_resource type="Script" uid="uid://bdb2ydo0awb0r" path="res://characters/player/interactableComponent.gd" id="5_nyxm8"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_nyxm8"]
 panorama = ExtResource("1_affft")
@@ -50,6 +51,45 @@ uv1_scale = Vector3(0.04, 0.04, 0.04)
 uv1_triplanar = true
 uv1_world_triplanar = true
 
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_nyxm8"]
+data = PackedVector3Array(-0.573761, -1.1, 0.0399048, -0.573761, -1.1, -0.0399048, -0.573761, 1.1, -0.0399048, 0.573761, -1.1, -0.0399048, -0.573761, -1.1, -0.0399048, -0.573761, -1.1, 0.0399048, -0.573761, 1.1, -0.0399048, -0.573761, -1.1, -0.0399048, 0.573761, -1.1, -0.0399048, -0.573761, 1.1, -0.0399048, -0.573761, 1.1, 0.0399048, -0.573761, -1.1, 0.0399048, -0.573761, -1.1, 0.0399048, -0.573761, 1.1, 0.0399048, 0.573761, 1.1, 0.0399048, 0.573761, 1.1, 0.0399048, -0.573761, 1.1, 0.0399048, -0.573761, 1.1, -0.0399048, -0.573761, -1.1, 0.0399048, 0.573761, -1.1, 0.0399048, 0.573761, -1.1, -0.0399048, 0.573761, 1.1, 0.0399048, 0.573761, -1.1, 0.0399048, -0.573761, -1.1, 0.0399048, 0.573761, -1.1, -0.0399048, 0.573761, -1.1, 0.0399048, 0.573761, 1.1, 0.0399048, 0.573761, -1.1, -0.0399048, 0.573761, 1.1, -0.0399048, -0.573761, 1.1, -0.0399048, -0.573761, 1.1, -0.0399048, 0.573761, 1.1, -0.0399048, 0.573761, 1.1, 0.0399048, 0.573761, 1.1, 0.0399048, 0.573761, 1.1, -0.0399048, 0.573761, -1.1, -0.0399048)
+
+[sub_resource type="Animation" id="Animation_affft"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 1.4027, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_nyxm8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ur7sy"]
+_data = {
+&"RESET": SubResource("Animation_nyxm8"),
+&"open": SubResource("Animation_affft")
+}
+
 [node name="debug_level" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -70,3 +110,27 @@ material = SubResource("StandardMaterial3D_nyxm8")
 
 [node name="ruler" parent="." instance=ExtResource("3_8blwi")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -25.4825, 0.0796115, -12.6163)
+
+[node name="interactable" type="Node3D" parent="."]
+
+[node name="porta" type="AnimatableBody3D" parent="interactable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.1637, 1.2, -18.8584)
+
+[node name="MeshInstance3D" type="CSGBox3D" parent="interactable/porta"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.517083, 0, 0)
+size = Vector3(1.14752, 2.2, 0.0798096)
+
+[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="interactable/porta"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.517083, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_nyxm8")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="interactable/porta"]
+libraries = {
+&"": SubResource("AnimationLibrary_ur7sy")
+}
+
+[node name="InteractableComponent" type="Node" parent="interactable/porta"]
+script = ExtResource("5_nyxm8")
+metadata/_custom_type_script = "uid://bdb2ydo0awb0r"
+
+[connection signal="interacted" from="interactable/porta/InteractableComponent" to="interactable/porta/AnimationPlayer" method="play" binds= ["open"]]
