@@ -195,6 +195,7 @@ visible = false
 mesh = SubResource("CapsuleMesh_a4aai")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_2vpwm")
 anchors_preset = 15
 anchor_right = 1.0

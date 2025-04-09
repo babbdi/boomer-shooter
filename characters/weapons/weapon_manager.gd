@@ -41,7 +41,7 @@ func update_weapon_model() -> void:
 			current_weapon_view_model.position = current_weapon.model_pos
 			current_weapon_view_model.rotation = current_weapon.model_rot
 			current_weapon_view_model.scale = current_weapon.model_scale
-			apply_clip_and_fov_shader_to_view_model(current_weapon_view_model)
+			#apply_clip_and_fov_shader_to_view_model(current_weapon_view_model)
 			if current_weapon_view_model.get_node_or_null("AnimationPlayer"):
 				current_weapon_view_model.get_node_or_null("AnimationPlayer").connect("current_animation_changed", current_anim_changed)
 
