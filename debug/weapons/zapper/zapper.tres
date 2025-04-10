@@ -1,8 +1,10 @@
-[gd_resource type="Resource" script_class="WeaponResource" load_steps=4 format=3 uid="uid://r0fjike5ov5n"]
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=6 format=3 uid="uid://r0fjike5ov5n"]
 
+[ext_resource type="PackedScene" uid="uid://dwws3v8fd35ln" path="res://debug/weapons/zapper/zapper_bullet_tracer.tscn" id="1_aonp0"]
 [ext_resource type="Script" uid="uid://dw4nhq3tconug" path="res://characters/weapons/weapon_resource.gd" id="1_ysdmq"]
 [ext_resource type="PackedScene" uid="uid://clej4fv1k34aa" path="res://debug/weapons/zapper/gun_1.tscn" id="2_ctguk"]
 [ext_resource type="AudioStream" uid="uid://caei7lif3jvyr" path="res://debug/weapons/zapper/zap.wav" id="3_568aa"]
+[ext_resource type="PackedScene" uid="uid://7l4rv36tlxn8" path="res://debug/weapons/zapper/zapper_muzzle_flash.tscn" id="3_aonp0"]
 
 [resource]
 script = ExtResource("1_ysdmq")
@@ -10,6 +12,8 @@ name = "zapper"
 slot = 1
 slot_priority = 1
 model = ExtResource("2_ctguk")
+muzzle_flash = ExtResource("3_aonp0")
+bullet_tracer = ExtResource("1_aonp0")
 model_pos = Vector3(0.956027, -0.9, -1.48863)
 model_rot = Vector3(0, 0.174533, 0)
 model_scale = Vector3(0.1, 0.1, 0.1)
@@ -19,10 +23,10 @@ shoot_anim = "shoot"
 reload_anim = "reload"
 shoot_sound = ExtResource("3_568aa")
 damage = 10
-current_ammo = 15.0
-magazine_capacity = 15.0
+current_ammo = 12.0
+magazine_capacity = 12.0
 reserve_ammo = inf
 max_reserve_ammo = inf
 auto_fire = true
-max_fire_rate_ms = 100.0
+max_fire_rate_ms = 300.0
 metadata/_custom_type_script = "uid://dw4nhq3tconug"

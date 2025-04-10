@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3 uid="uid://dwws3v8fd35ln"]
+
+[sub_resource type="GDScript" id="GDScript_3krrn"]
+script/source = "extends Node3D
+
+@export var target_pos = Vector3(0,0,0)
+@export var speed = 75 # m/s
+@export var tracer_lenght = 1
+
+const MAX_LIFETIME_MS = 5000
+
+@onready var spawn_time = Time.get_ticks_msec()
+
+func _process(delta: float) -> void:
+	var diff = target_pos - self.global_position
+	var add = diff.normalized() * speed * delta
+	add = add.limit_length(diff.length())
+	self.global_position += add
+	if (target_pos - self.global_position).length() <= tracer_lenght or Time.get_ticks_msec() - spawn_time > MAX_LIFETIME_MS:
+		self.queue_free()
+"
+
+[sub_resource type="Gradient" id="Gradient_3krrn"]
+offsets = PackedFloat32Array(0.0301205, 0.186747, 0.548193, 0.849398, 1)
+colors = PackedColorArray(0, 0.96, 0.176, 0, 0.25144, 0.56, 0.2352, 1, 0.1162, 0.83, 0.128097, 1, 0.408, 1, 0.04, 1, 0, 0.86, 0.157667, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_84a0x"]
+gradient = SubResource("Gradient_3krrn")
+height = 256
+fill_from = Vector2(0.5, 1)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_84a0x"]
+transparency = 1
+cull_mode = 2
+albedo_texture = SubResource("GradientTexture2D_84a0x")
+emission_enabled = true
+emission = Color(0.101134, 0.732158, 1.92523e-07, 1)
+emission_energy_multiplier = 16.0
+emission_texture = SubResource("GradientTexture2D_84a0x")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_2nuup"]
+material = SubResource("StandardMaterial3D_84a0x")
+radius = 0.013
+
+[node name="BulletTracer" type="Node3D"]
+script = SubResource("GDScript_3krrn")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -1)
+mesh = SubResource("CapsuleMesh_2nuup")

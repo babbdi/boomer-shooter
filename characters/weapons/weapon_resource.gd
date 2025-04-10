@@ -12,9 +12,13 @@ extends Resource
 ## Used for when the weapon is in the player's hand or on the ground
 @export var world_model : PackedScene
 
+@export var muzzle_flash : PackedScene
+@export var bullet_tracer : PackedScene
+
 @export var model_pos : Vector3
 @export var model_rot : Vector3
 @export var model_scale := Vector3(1,1,1)
+
 
 
 ### Which animation style the player model will use when the gun is equipped (viewed by other players/mirrors)
@@ -78,6 +82,7 @@ func on_process(delta : float) -> void:
 			fire_shot()
 		else:
 			reload_pressed()
+
 
 func on_trigger_down() -> void:
 	if Time.get_ticks_msec() - last_fire_time >= max_fire_rate_ms and current_ammo > 0:
@@ -159,8 +164,8 @@ func fire_shot() -> void:
 			obj.take_damage(attack)
 	
 	weapon_manager.show_muzzle_flash()
-	if num_shots_fired % 2 == 0:
-		weapon_manager.make_bullet_trail(bullet_target_pos)
+	#if num_shots_fired % 2 == 0:
+	weapon_manager.make_bullet_trail(bullet_target_pos)
 	weapon_manager.apply_recoil()
 	
 	last_fire_time = Time.get_ticks_msec()

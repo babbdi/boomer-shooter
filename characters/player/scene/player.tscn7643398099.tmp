@@ -1,0 +1,205 @@
+[gd_scene load_steps=20 format=3 uid="uid://bk8lvlxjxkt2d"]
+
+[ext_resource type="Script" uid="uid://lbedbhvtj8uf" path="res://characters/player/scene/player.gd" id="1_a4aai"]
+[ext_resource type="PackedScene" uid="uid://cb0fnc4vlyd74" path="res://characters/weapons/weapon_manager.tscn" id="2_0nskp"]
+[ext_resource type="Texture2D" uid="uid://cs20r6orwribq" path="res://debug/textures/level/debugOrange.jpg" id="2_nw75g"]
+[ext_resource type="Resource" uid="uid://r0fjike5ov5n" path="res://debug/weapons/zapper/zapper.tres" id="3_ow4ck"]
+[ext_resource type="Script" uid="uid://dw4nhq3tconug" path="res://characters/weapons/weapon_resource.gd" id="4_u7g1b"]
+[ext_resource type="Shader" uid="uid://q7rqit4ygd6n" path="res://characters/weapon_clip_and_fov_shader.gdshader" id="6_n5vo5"]
+[ext_resource type="Texture2D" uid="uid://c5ukafho4wpey" path="res://debug/textures/crosshair/debug_crosshair002.png" id="7_sar8d"]
+[ext_resource type="Shader" uid="uid://b5ptog53u0l54" path="res://ColorCorrect/Materials and Shaders/ScreenEffects_Ultimate.tres" id="8_sevic"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ie77o"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ie77o"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_a4aai"]
+radius = 0.4
+
+[sub_resource type="FontVariation" id="FontVariation_ow4ck"]
+variation_embolden = 0.33
+variation_transform = Transform2D(0.905, -0.155, -0.075, 1.605, 0.055, 0.075)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nw75g"]
+cull_mode = 1
+albedo_texture = ExtResource("2_nw75g")
+heightmap_scale = 16.0
+refraction_scale = 0.82
+uv1_scale = Vector3(33.97, 33.97, 33.97)
+grow_amount = 0.001
+
+[sub_resource type="TextMesh" id="TextMesh_a4aai"]
+material = SubResource("StandardMaterial3D_nw75g")
+text = "FPS: 64"
+font = SubResource("FontVariation_ow4ck")
+curve_step = 10.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n5vo5"]
+render_priority = 0
+shader = ExtResource("6_n5vo5")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("2_nw75g")
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 1.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(33, 33, 33)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/viewmodel_fov = 75.0
+shader_parameter/billboard = Vector3(0, 0, 0)
+
+[sub_resource type="GDScript" id="GDScript_a4aai"]
+script/source = "extends MeshInstance3D
+
+func _process(delta: float) -> void:
+	self.mesh.text = \"FPS: \" + str(Engine.get_frames_per_second())
+"
+
+[sub_resource type="TextMesh" id="TextMesh_nw75g"]
+material = SubResource("StandardMaterial3D_nw75g")
+text = "VALUE: 69"
+font = SubResource("FontVariation_ow4ck")
+curve_step = 10.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_a4aai"]
+radius = 0.125
+height = 0.25
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2vpwm"]
+shader = ExtResource("8_sevic")
+shader_parameter/Pixelation_Scale = 2.5
+shader_parameter/Panini = 0.0
+shader_parameter/Chromatic_Peripheral = 0.64
+shader_parameter/Chromatic_Aberrations = -4.9
+shader_parameter/Chromatic_Darkening = 0.29
+shader_parameter/Blur_Amount = -4.0
+shader_parameter/Blur_Centered = 0.0
+shader_parameter/Bloom_Starts = 0.9
+shader_parameter/Bloom_Halation = 0.0
+shader_parameter/Bloom_Booster = 0.0
+shader_parameter/Shadows_Split = 0.3
+shader_parameter/Shadow_Color_Temp = 0.0
+shader_parameter/Shadow_Green_Tint = 0.0
+shader_parameter/Shadow_Brightness = 1.0
+shader_parameter/Shadow_Contrast = 1.0
+shader_parameter/Shadows_Saturation = 1.0
+shader_parameter/Highlights_Split = 0.7
+shader_parameter/Mid_Color_Temp = 0.0
+shader_parameter/Mid_Green_Tint = 0.0
+shader_parameter/Mid_Brightness = 1.0
+shader_parameter/Mid_Contrast = 1.0
+shader_parameter/Mid_Saturation = 1.0
+shader_parameter/High_Color_Temp = 0.0
+shader_parameter/High_Green_Tint = 0.0
+shader_parameter/High_Brightness = 1.0
+shader_parameter/High_Contrast = 1.0
+shader_parameter/High_Saturation = 1.0
+shader_parameter/Main_Color_Temp = 4500.0
+shader_parameter/Main_Green_Tint = 0.0
+shader_parameter/Main_Brightness = 1.0
+shader_parameter/Main_Contrast = 1.0
+shader_parameter/Main_Saturation = 1.0
+shader_parameter/Posterization = 0.0
+shader_parameter/Vignette = 0.0
+shader_parameter/Film_Grain = 0.0
+shader_parameter/Filter_Strenght = 0.0
+
+[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "rc_stairAhead", "rc_stairBelow")]
+platform_on_leave = 2
+script = ExtResource("1_a4aai")
+head = NodePath("headOriginalPosition/cameraSmooth/head")
+camera = NodePath("headOriginalPosition/cameraSmooth/head/Camera3D")
+rc_stairAhead = NodePath("rc_stairAhead")
+rc_stairBelow = NodePath("rc_stairBelow")
+
+[node name="WeaponManager" parent="." node_paths=PackedStringArray("player", "bullet_raycast", "view_model_container") instance=ExtResource("2_0nskp")]
+current_weapon = ExtResource("3_ow4ck")
+equipped_weapons = Array[ExtResource("4_u7g1b")]([ExtResource("3_ow4ck")])
+player = NodePath("..")
+bullet_raycast = NodePath("../headOriginalPosition/cameraSmooth/head/Camera3D/rc_bullet")
+view_model_container = NodePath("../headOriginalPosition/cameraSmooth/head/Camera3D/view_model")
+
+[node name="cs_player" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_ie77o")
+
+[node name="mesh_player" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_ie77o")
+
+[node name="headOriginalPosition" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="cameraSmooth" type="Node3D" parent="headOriginalPosition"]
+unique_name_in_owner = true
+
+[node name="head" type="Node3D" parent="headOriginalPosition/cameraSmooth"]
+
+[node name="Camera3D" type="Camera3D" parent="headOriginalPosition/cameraSmooth/head"]
+
+[node name="sc_interactable" type="ShapeCast3D" parent="headOriginalPosition/cameraSmooth/head/Camera3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.1)
+shape = SubResource("SphereShape3D_a4aai")
+target_position = Vector3(0, 0, 0)
+max_results = 2
+collision_mask = 17
+collide_with_areas = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="headOriginalPosition/cameraSmooth/head/Camera3D"]
+transform = Transform3D(0.906308, -0.00516313, 0.422587, 0, 0.999925, 0.012217, -0.422618, -0.0110724, 0.90624, -1.30194, 0.758816, -1.4)
+cast_shadow = 0
+mesh = SubResource("TextMesh_a4aai")
+surface_material_override/0 = SubResource("ShaderMaterial_n5vo5")
+script = SubResource("GDScript_a4aai")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="headOriginalPosition/cameraSmooth/head/Camera3D"]
+transform = Transform3D(0.906308, -0.00516313, 0.422587, 0, 0.999925, 0.012217, -0.422618, -0.0110724, 0.90624, -1.10194, 0.458816, -1.4)
+visible = false
+cast_shadow = 0
+mesh = SubResource("TextMesh_nw75g")
+
+[node name="rc_bullet" type="RayCast3D" parent="headOriginalPosition/cameraSmooth/head/Camera3D"]
+target_position = Vector3(0, 0, -999)
+collide_with_areas = true
+
+[node name="view_model" type="Node3D" parent="headOriginalPosition/cameraSmooth/head/Camera3D"]
+transform = Transform3D(0.984808, 0, -0.173648, 0, 1, 0, 0.173648, 0, 0.984808, 0, 0, 0)
+
+[node name="crosshair" type="Sprite3D" parent="headOriginalPosition/cameraSmooth/head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.1)
+modulate = Color(0, 0, 0, 0.415686)
+no_depth_test = true
+texture_filter = 0
+render_priority = 10
+texture = ExtResource("7_sar8d")
+
+[node name="rc_stairAhead" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(0.998567, -0.0535211, 0, 0.0535211, 0.998567, 0, 0, 0, 1, 0, 0.842036, -1.15848)
+target_position = Vector3(0, -0.55, 0)
+
+[node name="rc_stairBelow" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+
+[node name="camera_tilt" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -1.4)
+visible = false
+
+[node name="lil_ball" type="MeshInstance3D" parent="camera_tilt"]
+mesh = SubResource("CapsuleMesh_a4aai")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_2vpwm")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

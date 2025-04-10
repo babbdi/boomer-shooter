@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://c48mw36otn3hm"]
+
+[ext_resource type="Texture2D" uid="uid://c563okwc05dqo" path="res://characters/weapons/muzzle_flash/muzzle_flash.png" id="1_1klx8"]
+
+[resource]
+transparency = 1
+albedo_color = Color(0.992157, 0.968627, 0.890196, 0.0980392)
+albedo_texture = ExtResource("1_1klx8")
+emission_enabled = true
+emission = Color(1, 0.764706, 0, 1)
+emission_energy_multiplier = 4.1
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
