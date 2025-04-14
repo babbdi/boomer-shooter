@@ -49,7 +49,7 @@ func update_weapon_model() -> void:
 			current_weapon_view_model.rotation = current_weapon.model_rot
 			current_weapon_view_model.scale = current_weapon.model_scale
 			
-			if current_weapon_muzzle:
+			if !current_weapon_muzzle:
 				current_weapon_muzzle = current_weapon.muzzle_flash.instantiate()
 				current_weapon_view_model.add_child(current_weapon_muzzle)
 				for i in current_weapon_view_model.find_children("muzzle", 'Node3D'):
@@ -179,7 +179,6 @@ func make_bullet_trail(target_pos : Vector3) -> void:
 		bullet_tracer.global_position = start_pos
 		bullet_tracer.target_pos = target_pos
 		bullet_tracer.look_at(target_pos)
-
 var heat : float = 0.0
 func apply_recoil() -> void:
 	var spray_recoil := Vector2.ZERO
