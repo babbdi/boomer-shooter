@@ -35,8 +35,9 @@ func update_weapon_model() -> void:
 		current_weapon_view_model.queue_free()
 		current_weapon_view_model.get_parent().remove_child(current_weapon_view_model)
 		
-		current_weapon_muzzle.queue_free()
-		current_weapon_muzzle.get_parent().remove_child(current_weapon_muzzle)
+		if current_weapon_muzzle:
+			current_weapon_muzzle.queue_free()
+			current_weapon_muzzle.get_parent().remove_child(current_weapon_muzzle)
 		
 	if current_weapon != null:
 		current_weapon.weapon_manager = self
@@ -48,12 +49,13 @@ func update_weapon_model() -> void:
 			current_weapon_view_model.rotation = current_weapon.model_rot
 			current_weapon_view_model.scale = current_weapon.model_scale
 			
-			current_weapon_muzzle = current_weapon.muzzle_flash.instantiate()
-			current_weapon_view_model.add_child(current_weapon_muzzle)
-			for i in current_weapon_view_model.find_children("muzzle", 'Node3D'):
-				current_weapon_muzzle_position = i
-				current_weapon_muzzle.position = current_weapon_muzzle_position.position
-			
+			if current_weapon_muzzle:
+				current_weapon_muzzle = current_weapon.muzzle_flash.instantiate()
+				current_weapon_view_model.add_child(current_weapon_muzzle)
+				for i in current_weapon_view_model.find_children("muzzle", 'Node3D'):
+					current_weapon_muzzle_position = i
+					current_weapon_muzzle.position = current_weapon_muzzle_position.position
+				
 			
 			apply_clip_and_fov_shader_to_view_model(current_weapon_view_model)
 			if current_weapon_view_model.get_node_or_null("AnimationPlayer"):
@@ -121,7 +123,6 @@ var current_anim_finished_callback
 var current_anim_cancelled_callback
 func play_anim(name : String, finished_callback = null, cancelled_callback = null) -> void:
 	var anim_player : AnimationPlayer = current_weapon_view_model.get_node_or_null("AnimationPlayer")
-	
 	if last_played_anim and get_anim() == last_played_anim and current_anim_cancelled_callback is Callable:
 		current_anim_cancelled_callback.call() # Last anim didn't finish yet
 	
@@ -187,7 +188,7 @@ func apply_recoil() -> void:
 	var random_recoil := Vector2(randf_range(-1, 1), randf_range(-1, 1)) * 0.01
 	var recoil := spray_recoil + random_recoil
 	player.add_recoil(-recoil.y, -recoil.x)
-	heat += 1.0
+	heat += 5.0
 
 func get_current_recoil() -> Vector2:
 	return player.get_current_recoil() if player.has_method("get_current_recoil") else Vector2()
@@ -198,7 +199,6 @@ func _unhandled_input(event : InputEvent) -> void:
 			current_weapon.trigger_down = true
 		elif event.is_action_released("trigger_shoot"):
 			current_weapon.trigger_down = false
-		
 		if event.is_action_pressed("reload"):
 			current_weapon.reload_pressed()
 
@@ -211,16 +211,9 @@ func _process(delta: float) -> void:
 	#update_weapon_hold_anims()
 	if current_weapon:
 		current_weapon.on_process(delta)
-### LIDAR COM VISUAL DO LIQUIDO DA ZAPPER 
-		#if current_weapon.name == 'zapper':
-			#if current_weapon_view_model.find_child('inner_part'):
-				#var zap_regra_de_3 := current_weapon.current_ammo / (1.0 * current_weapon.magazine_capacity)
-				### 0.78 = 1 //// 0.67 = 0
-				#print(zap_regra_de_3)
-				#var zap_inner_model := current_weapon_view_model.find_child('inner_part')
-				#zap_inner_model.get_surface_override_material(0).set('shader_parameter/fill_amount', 1 * zap_regra_de_3)
-				#rint(inner_model)
 	if current_weapon_muzzle:
 		current_weapon_muzzle.position = current_weapon_muzzle_position.position
-
+	#if Input.is_action_just_pressed("crouch"):
+		#current_weapon = preload("res://characters/weapons/garchar/cigarette/cigarette.tres")
+	
 	heat = max(0.0, heat - delta * 10.0)

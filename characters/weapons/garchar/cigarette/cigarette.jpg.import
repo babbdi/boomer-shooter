@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c563okwc05dqo"
-path.s3tc="res://.godot/imported/muzzle_flash.png-9f63c2ec88cb41ac44d31418f7ae482b.s3tc.ctex"
+uid="uid://ijchxtdlvibo"
+path.s3tc="res://.godot/imported/cigarette.jpg-113141ffa7d8e8d987bc60926ff0a300.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://characters/weapons/muzzle_flash/muzzle_flash.png"
-dest_files=["res://.godot/imported/muzzle_flash.png-9f63c2ec88cb41ac44d31418f7ae482b.s3tc.ctex"]
+source_file="res://characters/weapons/garchar/cigarette/cigarette.jpg"
+dest_files=["res://.godot/imported/cigarette.jpg-113141ffa7d8e8d987bc60926ff0a300.s3tc.ctex"]
 
 [params]
 

@@ -74,6 +74,8 @@ func _process(delta: float) -> void:
 		get_interactable_component_at_shapecast().hover_cursor(self)
 		if Input.is_action_just_pressed("interact"):
 			get_interactable_component_at_shapecast().interact_with()
+	
+	update_recoil(delta)
 
 func _handle_water_physics(delta : float) -> bool:
 	if get_tree().get_nodes_in_group("water_area").all(func(area : Node3D) -> bool: return !area.overlaps_body(self)):

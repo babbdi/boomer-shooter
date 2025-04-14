@@ -10,7 +10,7 @@ static func spawn_bullet_decal(global_pos : Vector3, normal : Vector3, parent : 
 		decal_pool.push_back(decal_instance)
 		decal_instance.reparent(parent)
 	else:
-		decal_instance = preload("res://characters/weapons/decal/bullet_decal.tscn").instantiate()
+		decal_instance = preload("res://characters/weapons/logic/decal/bullet_decal.tscn").instantiate()
 		parent.add_child(decal_instance)
 		decal_pool.push_back(decal_instance)
 	

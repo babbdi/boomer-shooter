@@ -23,7 +23,7 @@ func _process(delta: float) -> void:
 		$zapper/inner_part.get_surface_override_material(0).set('shader_parameter/fill_amount', new_liquid)
 		new_liquid = lerpf(new_liquid ,max_liquid, 2 * delta)
 		print(\"can reload \", new_liquid)
-		if new_liquid == 0.799999:
+		if new_liquid >= 0.7999:
 			can_reload = false
 "
 

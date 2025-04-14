@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=3 format=3 uid="uid://dlm5lupthiyof"]
+
+[ext_resource type="PackedScene" uid="uid://b27kqwk4xkljv" path="res://characters/weapons/emptyHand/empty_hand.tscn" id="1_fdoqb"]
+[ext_resource type="Script" uid="uid://dw4nhq3tconug" path="res://characters/weapons/logic/weapon_resource.gd" id="2_fdoqb"]
+
+[resource]
+script = ExtResource("2_fdoqb")
+name = "emptyHand"
+slot = 1
+slot_priority = 1
+model = ExtResource("1_fdoqb")
+world_model = ExtResource("1_fdoqb")
+model_pos = Vector3(0, 0, 0)
+model_rot = Vector3(0, 0, 0)
+model_scale = Vector3(1, 1, 1)
+idle_anim = ""
+equip_anim = ""
+shoot_anim = ""
+reload_anim = ""
+damage = 10
+current_ammo = inf
+magazine_capacity = inf
+reserve_ammo = inf
+max_reserve_ammo = inf
+auto_fire = false
+max_fire_rate_ms = 9.22337e+18
+metadata/_custom_type_script = "uid://dw4nhq3tconug"

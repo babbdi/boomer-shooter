@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cb0fnc4vlyd74"]
 
-[ext_resource type="Script" uid="uid://pfmnpv5hlto2" path="res://characters/weapons/weapon_manager.gd" id="1_cdsfw"]
-[ext_resource type="PackedScene" uid="uid://bmaibkpit5ykt" path="res://characters/weapons/muzzle_flash/muzzle_flash.tscn" id="2_sco32"]
+[ext_resource type="Script" uid="uid://pfmnpv5hlto2" path="res://characters/weapons/logic/weapon_manager.gd" id="1_cdsfw"]
+[ext_resource type="PackedScene" uid="uid://bmaibkpit5ykt" path="res://characters/weapons/logic/muzzle_flash/muzzle_flash.tscn" id="2_sco32"]
 
 [node name="WeaponManager" type="Node3D"]
 script = ExtResource("1_cdsfw")

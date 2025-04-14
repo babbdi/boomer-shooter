@@ -1,10 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://bk8lvlxjxkt2d"]
+[gd_scene load_steps=19 format=3 uid="uid://bk8lvlxjxkt2d"]
 
 [ext_resource type="Script" uid="uid://lbedbhvtj8uf" path="res://characters/player/scene/player.gd" id="1_a4aai"]
-[ext_resource type="PackedScene" uid="uid://cb0fnc4vlyd74" path="res://characters/weapons/weapon_manager.tscn" id="2_0nskp"]
+[ext_resource type="PackedScene" uid="uid://cb0fnc4vlyd74" path="res://characters/weapons/logic/weapon_manager.tscn" id="2_0nskp"]
 [ext_resource type="Texture2D" uid="uid://cs20r6orwribq" path="res://debug/textures/level/debugOrange.jpg" id="2_nw75g"]
-[ext_resource type="Resource" uid="uid://r0fjike5ov5n" path="res://debug/weapons/zapper/zapper.tres" id="3_ow4ck"]
-[ext_resource type="Script" uid="uid://dw4nhq3tconug" path="res://characters/weapons/weapon_resource.gd" id="4_u7g1b"]
+[ext_resource type="Resource" uid="uid://cd7sf3m4y32em" path="res://characters/weapons/garchar/cigarette/cigarette.tres" id="3_sar8d"]
 [ext_resource type="Shader" uid="uid://q7rqit4ygd6n" path="res://characters/weapon_clip_and_fov_shader.gdshader" id="6_n5vo5"]
 [ext_resource type="Texture2D" uid="uid://c5ukafho4wpey" path="res://debug/textures/crosshair/debug_crosshair002.png" id="7_sar8d"]
 [ext_resource type="Shader" uid="uid://b5ptog53u0l54" path="res://ColorCorrect/Materials and Shaders/ScreenEffects_Ultimate.tres" id="8_sevic"]
@@ -117,8 +116,7 @@ rc_stairAhead = NodePath("rc_stairAhead")
 rc_stairBelow = NodePath("rc_stairBelow")
 
 [node name="WeaponManager" parent="." node_paths=PackedStringArray("player", "bullet_raycast", "view_model_container") instance=ExtResource("2_0nskp")]
-current_weapon = ExtResource("3_ow4ck")
-equipped_weapons = Array[ExtResource("4_u7g1b")]([ExtResource("3_ow4ck")])
+current_weapon = ExtResource("3_sar8d")
 player = NodePath("..")
 bullet_raycast = NodePath("../headOriginalPosition/cameraSmooth/head/Camera3D/rc_bullet")
 view_model_container = NodePath("../headOriginalPosition/cameraSmooth/head/Camera3D/view_model")
@@ -140,6 +138,7 @@ unique_name_in_owner = true
 [node name="head" type="Node3D" parent="headOriginalPosition/cameraSmooth"]
 
 [node name="Camera3D" type="Camera3D" parent="headOriginalPosition/cameraSmooth/head"]
+unique_name_in_owner = true
 
 [node name="sc_interactable" type="ShapeCast3D" parent="headOriginalPosition/cameraSmooth/head/Camera3D"]
 unique_name_in_owner = true

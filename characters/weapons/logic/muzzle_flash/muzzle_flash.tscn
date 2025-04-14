@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bmaibkpit5ykt"]
 
-[ext_resource type="Texture2D" uid="uid://c563okwc05dqo" path="res://characters/weapons/muzzle_flash/muzzle_flash.png" id="1_kqsap"]
+[ext_resource type="Texture2D" uid="uid://c563okwc05dqo" path="res://characters/weapons/logic/muzzle_flash/muzzle_flash.png" id="1_kqsap"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mtih7"]
 angle_min = -720.0

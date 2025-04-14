@@ -23,9 +23,9 @@ uniform float viewmodel_fov = 75.0f;
 uniform vec3 billboard;
 
 void vertex() {
-	
+
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
-	
+
 	/* VIEW MODEL Z CLIP FIX CODE */
 	if (viewmodel_fov > 0.0) {
 		float onetanfov = 1.0f / tan(0.5f * (viewmodel_fov * PI / 180.0f));
@@ -34,7 +34,7 @@ void vertex() {
 		PROJECTION_MATRIX[1][1] = -onetanfov;
 		PROJECTION_MATRIX[0][0] = onetanfov / aspect;
 	}
-	
+
 	POSITION = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(VERTEX.xyz, 1.0);
 	// Mix vertex Z super close to clip plane, still maintaining some distance
 	//POSITION.z = mix(POSITION.z, 0.0, 0.999); // Old version. Mix towards 0.0 (near z plane)
@@ -49,8 +49,8 @@ void vertex() {
 // POSITION.xyz = POSITION.xyz / POSITION.w;
 
 void fragment() {
-	
-	
+
+
 	// https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html#fragment-built-ins
 	// in vec3 VERTEX
 	// Vertex that comes from vertex function (default, in view space).
@@ -58,7 +58,7 @@ void fragment() {
 	//vec4 clipSpace = PROJECTION_MATRIX * vec4(VERTEX, 1.0);
 	//vec3 ndc = clipSpace.xyz / clipSpace.w;
 	//DEPTH = mix((ndc.z + 1.0) / 2.0, 1.0, 0.9);
-	
+
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
 	ALBEDO = albedo.rgb * albedo_tex.rgb;

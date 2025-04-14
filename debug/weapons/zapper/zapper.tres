@@ -1,10 +1,16 @@
-[gd_resource type="Resource" script_class="WeaponResource" load_steps=6 format=3 uid="uid://r0fjike5ov5n"]
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=7 format=3 uid="uid://r0fjike5ov5n"]
 
 [ext_resource type="PackedScene" uid="uid://dwws3v8fd35ln" path="res://debug/weapons/zapper/zapper_bullet_tracer.tscn" id="1_aonp0"]
-[ext_resource type="Script" uid="uid://dw4nhq3tconug" path="res://characters/weapons/weapon_resource.gd" id="1_ysdmq"]
+[ext_resource type="Script" uid="uid://dw4nhq3tconug" path="res://characters/weapons/logic/weapon_resource.gd" id="1_ysdmq"]
 [ext_resource type="PackedScene" uid="uid://clej4fv1k34aa" path="res://debug/weapons/zapper/gun_1.tscn" id="2_ctguk"]
 [ext_resource type="AudioStream" uid="uid://caei7lif3jvyr" path="res://debug/weapons/zapper/zap.wav" id="3_568aa"]
 [ext_resource type="PackedScene" uid="uid://7l4rv36tlxn8" path="res://debug/weapons/zapper/zapper_muzzle_flash.tscn" id="3_aonp0"]
+
+[sub_resource type="Curve2D" id="Curve2D_aonp0"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 89, -96, 0, 0, 0, 0, -43, -162, 0, 0, 0, 0, 32, -285, 0, 0, 0, 0, 89, -372, 0, 0, 0, 0, -32, -478, 0, 0, 0, 0, -95, -596, 0, 0, 0, 0, -1, -705, 0, 0, 0, 0, 86, -792, 0, 0, 0, 0, 89, -839, 0, 0, 0, 0, 27, -898, 0, 0, 0, 0, -74, -940, 0, 0, 0, 0, -88, -959)
+}
+point_count = 13
 
 [resource]
 script = ExtResource("1_ysdmq")
@@ -29,4 +35,5 @@ reserve_ammo = inf
 max_reserve_ammo = inf
 auto_fire = true
 max_fire_rate_ms = 300.0
+spray_pattern = SubResource("Curve2D_aonp0")
 metadata/_custom_type_script = "uid://dw4nhq3tconug"
