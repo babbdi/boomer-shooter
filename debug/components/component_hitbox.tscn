@@ -1,7 +1,67 @@
-[gd_scene load_steps=2 format=3 uid="uid://ty3q62sbqlgp"]
+[gd_scene load_steps=10 format=3 uid="uid://ty3q62sbqlgp"]
 
 [ext_resource type="Script" uid="uid://d0d2h85pbnwfr" path="res://debug/components/component_hitbox.gd" id="1_3opil"]
+[ext_resource type="Texture2D" uid="uid://bbmmor1wo1rmi" path="res://debug/components/elemental/fire/component_elemental_fire02.png" id="2_uqlfi"]
+
+[sub_resource type="Curve" id="Curve_7gmo3"]
+_limits = [-1.0, 1.0, 0.0, 1.0]
+_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(0.495192, -1), 0.0, 0.0, 0, 0, Vector2(1, -1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_822s7"]
+curve = SubResource("Curve_7gmo3")
+
+[sub_resource type="Curve" id="Curve_a6tsu"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.855769, 0.640449), -0.779026, -0.779026, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_4du5c"]
+curve = SubResource("Curve_a6tsu")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3f51c"]
+angle_min = -720.0
+angle_max = 720.0
+spread = 180.0
+gravity = Vector3(0, 5.07, 0)
+attractor_interaction_enabled = false
+scale_curve = SubResource("CurveTexture_4du5c")
+hue_variation_min = -0.09
+hue_variation_max = 0.11
+hue_variation_curve = SubResource("CurveTexture_822s7")
+turbulence_enabled = true
+turbulence_noise_strength = 20.0
+turbulence_noise_scale = 10.0
+turbulence_noise_speed_random = 4.0
+turbulence_influence_min = 0.006
+turbulence_influence_max = 0.006
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hymxt"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(4.42, 1.105, 0.2, 1)
+albedo_texture = ExtResource("2_uqlfi")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_dh8dl"]
+material = SubResource("StandardMaterial3D_hymxt")
 
 [node name="component_hitbox" type="Area3D"]
 script = ExtResource("1_3opil")
 use_parent_hitbox = true
+
+[node name="component_elemental_fire" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 12
+lifetime = 0.92
+explosiveness = 0.04
+process_material = SubResource("ParticleProcessMaterial_3f51c")
+draw_pass_1 = SubResource("QuadMesh_dh8dl")
+
+[node name="timer_elemental_damage" type="Timer" parent="."]
+
+[connection signal="timeout" from="timer_elemental_damage" to="." method="_on_timer_elemental_damage_timeout"]

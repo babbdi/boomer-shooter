@@ -7,14 +7,17 @@ extends Resource
 @export_range(1,9) var slot : int = 1
 @export_range(1,10) var slot_priority : int = 1
 
+@export_category('scenes')
 ## Used for the first person perspective, when holding the gun. Will include hand models
 @export var model : PackedScene
 ## Used for when the weapon is in the player's hand or on the ground
 @export var world_model : PackedScene
 
+@export var uses_muzzle := false
 @export var muzzle_flash : PackedScene
 @export var bullet_tracer : PackedScene
 
+@export_category('vectors')
 @export var model_pos : Vector3
 @export var model_rot : Vector3
 @export var model_scale := Vector3(1,1,1)
@@ -26,7 +29,7 @@ extends Resource
 	#PISTOL, SMG, BAZOOKA, KNIFE, GRENADE
 #}
 #@export var hold_style : CharacterHoldStyle
-
+@export_category('animation')
 @export var idle_anim : String
 @export var equip_anim : String
 @export var shoot_anim : String
@@ -34,12 +37,14 @@ extends Resource
 
 ## Sounds
 
+@export_category('sounds')
 @export var shoot_sound : AudioStream
 @export var reload_sound : AudioStream
 @export var unholster_sound : AudioStream
 
 ## Weapon logic
 
+@export_category('damage & info')
 @export var damage := 10
 
 @export var current_ammo := INF
@@ -51,6 +56,8 @@ extends Resource
 @export var max_fire_rate_ms : float = 50
 
 @export var spray_pattern : Curve2D
+
+@export_enum('none','fire','acid') var elemental = 'none'
 
 const RAYCAST_DIST : float = 9999 # Too far seems to break it
 
@@ -154,6 +161,8 @@ func fire_shot() -> void:
 		attack.attack_damage = damage
 		attack.attack_hit_location = pt
 		bullet_target_pos = pt
+
+				
 		BulletDecalPool.spawn_bullet_decal(pt, nrml, obj, raycast.global_basis)
 		if obj is RigidBody3D:
 			obj.apply_impulse(-nrml * 5.0 / obj.mass, pt - obj.global_position)

@@ -18,11 +18,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 current_health = 100.0
 
 [node name="component_hitbox" parent="." instance=ExtResource("2_y40ji")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+flammable = true
+flame_multiplier = 2.0
 
 [node name="component_hitbox2" parent="." instance=ExtResource("2_y40ji")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 use_parent_hitbox = false
 critical_spot = true
+flammable = true
 
 [node name="Area3D" type="CollisionShape3D" parent="component_hitbox2"]
 shape = SubResource("SphereShape3D_y40ji")

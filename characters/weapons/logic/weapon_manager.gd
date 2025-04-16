@@ -49,7 +49,7 @@ func update_weapon_model() -> void:
 			current_weapon_view_model.rotation = current_weapon.model_rot
 			current_weapon_view_model.scale = current_weapon.model_scale
 			
-			if !current_weapon_muzzle:
+			if !current_weapon_muzzle && current_weapon.uses_muzzle:
 				current_weapon_muzzle = current_weapon.muzzle_flash.instantiate()
 				current_weapon_view_model.add_child(current_weapon_muzzle)
 				for i in current_weapon_view_model.find_children("muzzle", 'Node3D'):

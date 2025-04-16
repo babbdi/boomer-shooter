@@ -24,6 +24,10 @@ func fire_shot() -> void:
 		attack.attack_damage = damage
 		attack.attack_hit_location = pt
 		bullet_target_pos = pt
+		if elemental != 'none':
+			match elemental:
+				'fire':
+					attack.elemental = 'fire'
 		BulletDecalPool.spawn_bullet_decal(pt, nrml, obj, raycast.global_basis)
 		if obj is RigidBody3D:
 			obj.apply_impulse(-nrml * 5.0 / obj.mass, pt - obj.global_position)

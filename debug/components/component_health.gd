@@ -2,6 +2,9 @@ class_name component_health
 extends Node3D
 
 var anim_player : AnimationPlayer = null
+
+
+
 @export var current_health : float :
 	set(new_health):
 		#print(new_health)
